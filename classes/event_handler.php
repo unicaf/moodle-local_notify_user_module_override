@@ -32,12 +32,17 @@ class event_handler
 
     public static function assign_user_override_created(\mod_assign\event\user_override_created $event)
     {
-//    getmails($event);
+
         $event_data = $event->get_data();
-//        var_dump(json_encode($event_data));
-        $userid = $event_data["userid"];
-        print_r($userid);
-        die();
+        var_dump(json_encode($event_data));
+        //related user is the user which is affected - student
+        $userid = $event_data["relateduserid"];
+//        print_r($userid);
+        $emailofUser= \core_user::get_user($userid);
+//        $emailofUser = $emailofUser->email;
+//        print_r($emailofUser);
+        return overrideEmailUser($emailofUser);
+//        die();
     }
     public static function assign_user_override_updated(){
 
