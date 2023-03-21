@@ -26,6 +26,22 @@ require __DIR__.'/emails.php';
 
 use core\event\assessable_submitted;
 use \mod_assign\event\user_override_created;
+function getStudentEmail($event)
+{
+    $event_data = $event->get_data();
+    var_dump(json_encode($event_data));
+    //related user is the user which is affected - student
+    $relatedStudent = $event_data["relateduserid"];
+    $emailofUser= \core_user::get_user($relatedStudent);
+    //Get Teacher who gave the extension
+    $relatedTeacher = $event_data["userid"];
+    $emailofTeacher = \core_user::get_user($relatedTeacher);
+    $courseID = $event_data["courseid"];
+    $assignID = $event_data["other"]["assignid"];
+    $component = $event_data["component"];
+    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID,$assignID, $component);
+}
+
 
 class event_handler
 {
@@ -33,16 +49,8 @@ class event_handler
     public static function assign_user_override_created(\mod_assign\event\user_override_created $event)
     {
 
-        $event_data = $event->get_data();
-        var_dump(json_encode($event_data));
-        //related user is the user which is affected - student
-        $userid = $event_data["relateduserid"];
-//        print_r($userid);
-        $emailofUser= \core_user::get_user($userid);
-//        $emailofUser = $emailofUser->email;
-//        print_r($emailofUser);
-        return overrideEmailUser($emailofUser);
-//        die();
+
+        return getStudentEmail($event);
     }
     public static function assign_user_override_updated(){
 
@@ -59,4 +67,7 @@ class event_handler
 
 
 }
+
+
+
 
