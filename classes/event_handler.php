@@ -37,9 +37,12 @@ function getStudentEmail($event)
     $relatedTeacher = $event_data["userid"];
     $emailofTeacher = \core_user::get_user($relatedTeacher);
     $courseID = $event_data["courseid"];
-    $assignID = $event_data["other"]["assignid"];
     $component = $event_data["component"];
-    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID,$assignID, $component);
+    $assignmentID = $event_data["other"]["assignid"];
+
+
+    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID, $component);
+
 }
 
 
@@ -56,9 +59,9 @@ class event_handler
 
     }
 
-    public static function quiz_user_override_created()
+    public static function quiz_user_override_created(\mod_quiz\event\user_override_created $event)
     {
-
+        return getStudentEmail($event);
     }
     public static function quiz_user_override_updated()
     {
