@@ -30,9 +30,9 @@ use \mod_assign\event\user_override_created;
 function getStudentEmail($event)
 {
     global $COURSE;
+
     $courseObject = $COURSE;
     $event_data = $event->get_data();
-//    var_dump($event_data);
 
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
@@ -48,6 +48,7 @@ function getStudentEmail($event)
 
     if($component === "mod_assign"){
         $assignId = $event_data["other"]["assignid"];
+        $assignmentName = getAssignmentName($assignId);
         $component = "Assignment";
     }elseif($component=="mod_quiz"){
         $assignId = $event_data["other"]["quizid"];
@@ -57,15 +58,17 @@ function getStudentEmail($event)
         $component = "Assignment / Quiz";
     }
 
-
-    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID,$courseName, $component, $assignId);
+//    getAssignmentName($assignId);
+    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID,$courseName, $component, $assignmentName);
 
 }
 
-//function getAssignmentName($id){
-//    global
-//
-//}
+function getAssignmentName($id){
+    global $DB;
+    $assignmentName = $DB->get_record("assign",array('id'=>$id),'name');
+//    var_dump($assignmentName);
+    return $assignmentName;
+}
 
 
 class event_handler

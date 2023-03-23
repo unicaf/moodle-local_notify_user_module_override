@@ -22,13 +22,14 @@
 
 
 //print_r("Emails page");
-function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid,$courseName, $component, $assignId){
+function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid,$courseName, $component, $assignmentName){
     // Send email to user
+    $assignmentName = $assignmentName->name;
 
     $emailFrom =core_user::get_noreply_user();
     $emailToUser = $emailofUser;
     $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
-    $message = "Dear ".$emailofUser->firstname . " Your " .$component ." ". $assignId . " has changed";
+    $message = "Dear ".$emailofUser->firstname . " your " .$component ." = ". $assignmentName . " has changed";
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 
 
