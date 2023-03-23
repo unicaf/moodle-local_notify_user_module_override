@@ -27,7 +27,7 @@ require_once($CFG->dirroot ."/config.php");
 
 use core\event\assessable_submitted;
 use \mod_assign\event\user_override_created;
-function getStudentEmail($event)
+function getData($event)
 {
     global $COURSE;
 
@@ -37,13 +37,11 @@ function getStudentEmail($event)
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
     $emailofUser= \core_user::get_user($relatedStudent);
-    //Get Teacher who gave the extension
-    $relatedTeacher = $event_data["userid"];
-    $emailofTeacher = \core_user::get_user($relatedTeacher);
+
     $courseID = $event_data["courseid"];
     $courseName = $courseObject->fullname;
     $component = $event_data["component"];
-    $assignId;
+//    $assignId =
 
 
     if($component === "mod_assign"){
@@ -60,18 +58,16 @@ function getStudentEmail($event)
     }
 
 //    getAssignmentName($assignId);
-    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID,$courseName, $component, $assignmentName);
+    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName);
 
 }
 
 function getAssignmentName($id,$table){
     /* In this function we require two parameters , $id and $table. The ID is the ID of the assignment or quiz
     and the table is for the database table (mdl_assign is for assignments and mdl_quiz for quizes)
-    We then create a database connection and add our $table parameter passed from getStudentEmail and return back
+    We then create a database connection and add our $table parameter passed from getData and return back
     an object with the name of the assignment/quiz
-
-
-  */
+    */
     global $DB;
     $assignmentName = $DB->get_record("$table",array('id'=>$id),'name');
 //    var_dump($assignmentName);
@@ -88,7 +84,7 @@ class event_handler
     {
 
 
-        return getStudentEmail($event);
+        return getData($event);
     }
     public static function assign_user_override_updated(){
 
@@ -96,7 +92,7 @@ class event_handler
 
     public static function quiz_user_override_created(\mod_quiz\event\user_override_created $event)
     {
-        return getStudentEmail($event);
+        return getData($event);
     }
     public static function quiz_user_override_updated()
     {

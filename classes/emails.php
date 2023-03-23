@@ -21,8 +21,8 @@
  */
 
 
-//print_r("Emails page");
-function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid,$courseName, $component, $assignmentName){
+
+function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $component, $assignmentName){
     // Send email to user
     $assignmentName = $assignmentName->name;
 
