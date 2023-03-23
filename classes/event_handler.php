@@ -48,10 +48,11 @@ function getStudentEmail($event)
 
     if($component === "mod_assign"){
         $assignId = $event_data["other"]["assignid"];
-        $assignmentName = getAssignmentName($assignId);
+        $assignmentName = getAssignmentName($assignId, $table="assign");
         $component = "Assignment";
     }elseif($component=="mod_quiz"){
         $assignId = $event_data["other"]["quizid"];
+        $assignmentName = getAssignmentName($assignId, $table="quiz");
         $component = "Quiz";
     }else{
         //create error message
@@ -63,12 +64,21 @@ function getStudentEmail($event)
 
 }
 
-function getAssignmentName($id){
+function getAssignmentName($id,$table){
+    /* In this function we require two parameters , $id and $table. The ID is the ID of the assignment or quiz
+    and the table is for the database table (mdl_assign is for assignments and mdl_quiz for quizes)
+    We then create a database connection and add our $table parameter passed from getStudentEmail and return back
+    an object with the name of the assignment/quiz
+
+
+  */
     global $DB;
-    $assignmentName = $DB->get_record("assign",array('id'=>$id),'name');
+    $assignmentName = $DB->get_record("$table",array('id'=>$id),'name');
 //    var_dump($assignmentName);
     return $assignmentName;
 }
+
+
 
 
 class event_handler
