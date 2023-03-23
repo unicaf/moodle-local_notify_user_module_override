@@ -1,19 +1,34 @@
 <?php
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Version info
+ *
+ * @package    local_course_reminder
+ * @copyright  2023 UNICAF LTD <info@unicaf.org>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 
 print_r("Emails page");
-function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid, $component){
+function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid, $component, $assignId){
     // Send email to user
-    if($component === "mod_assign"){
-        $component = "Assignment";
-    }elseif($component=="mod_quiz"){
-        $component = "Quiz";
-    }else{
-        $component = "Assignment / Quiz";
-    }
+
     $emailFrom =core_user::get_noreply_user();
     $emailToUser = $emailofUser;
-    $subject = "Your course with ID ".$courseid . " with assignment ID " . " has changed dates";
-    $message = "Dear ".$emailofUser->firstname . " Your " .$component .  " has changed";
+    $subject = "Your course with ID ".$courseid . "- ". ".$component " . " has changed dates";
+    $message = "Dear ".$emailofUser->firstname . " Your " .$component ." ". $assignId . " has changed";
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 
 

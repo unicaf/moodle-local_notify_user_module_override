@@ -38,10 +38,22 @@ function getStudentEmail($event)
     $emailofTeacher = \core_user::get_user($relatedTeacher);
     $courseID = $event_data["courseid"];
     $component = $event_data["component"];
-    $assignmentID = $event_data["other"]["assignid"];
+    $assignId;
+
+    if($component === "mod_assign"){
+        $assignId = $event_data["other"]["assignid"];
+        $component = "Assignment";
+    }elseif($component=="mod_quiz"){
+        $assignId = $event_data["other"]["quizid"];
+        $component = "Quiz";
+    }else{
+        //create error message
+        $component = "Assignment / Quiz";
+    }
 
 
-    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID, $component);
+
+    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID, $component, $assignId);
 
 }
 
