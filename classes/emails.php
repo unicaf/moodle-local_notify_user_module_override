@@ -21,13 +21,13 @@
  */
 
 
-print_r("Emails page");
-function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid, $component, $assignId){
+//print_r("Emails page");
+function overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseid,$courseName, $component, $assignId){
     // Send email to user
 
     $emailFrom =core_user::get_noreply_user();
     $emailToUser = $emailofUser;
-    $subject = "Your course with ID ".$courseid . "- ". ".$component " . " has changed dates";
+    $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
     $message = "Dear ".$emailofUser->firstname . " Your " .$component ." ". $assignId . " has changed";
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 

@@ -22,14 +22,18 @@
 namespace local_course_reminder;
 defined('MOODLE_INTERNAL') || die();
 require __DIR__.'/emails.php';
+require_once($CFG->dirroot ."/config.php");
 
 
 use core\event\assessable_submitted;
 use \mod_assign\event\user_override_created;
 function getStudentEmail($event)
 {
+    global $COURSE;
+    $courseObject = $COURSE;
     $event_data = $event->get_data();
-    var_dump(json_encode($event_data));
+//    var_dump($event_data);
+
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
     $emailofUser= \core_user::get_user($relatedStudent);
@@ -37,8 +41,10 @@ function getStudentEmail($event)
     $relatedTeacher = $event_data["userid"];
     $emailofTeacher = \core_user::get_user($relatedTeacher);
     $courseID = $event_data["courseid"];
+    $courseName = $courseObject->fullname;
     $component = $event_data["component"];
     $assignId;
+
 
     if($component === "mod_assign"){
         $assignId = $event_data["other"]["assignid"];
@@ -52,10 +58,14 @@ function getStudentEmail($event)
     }
 
 
-
-    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID, $component, $assignId);
+    overrideAssignEmailStudent($emailofUser, $emailofTeacher, $courseID,$courseName, $component, $assignId);
 
 }
+
+//function getAssignmentName($id){
+//    global
+//
+//}
 
 
 class event_handler
