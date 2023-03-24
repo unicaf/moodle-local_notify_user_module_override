@@ -29,7 +29,7 @@ function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $compon
     $emailFrom =core_user::get_noreply_user();
     $emailToUser = $emailofUser;
     $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
-    $message = "Dear ".$emailofUser->firstname . " your " .$component . $assignment_url . " has changed";
+    $message = "Dear ".$emailofUser->firstname . " your " .$component ." ". $assignment_url . " has changed";
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 
 

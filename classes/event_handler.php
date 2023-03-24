@@ -52,6 +52,7 @@ function getData($event)
         $component = "Assignment";
     }elseif($component=="mod_quiz"){
         $assignId = $event_data["other"]["quizid"];
+        $assignment_url = get_assignment_url($contextinstanceid,$component);
         $assignmentName = getAssignmentName($assignId, $table="quiz");
         $component = "Quiz";
     }else{
@@ -81,7 +82,7 @@ function get_assignment_url($id, $component){
     if($component == "mod_assign") {
         return new \moodle_url('/mod/assign/view.php', array('id'=> $id));
     }elseif ($component == "mod_quiz"){
-        return new \moodle_url('/mod/quiz/view.php',$id);
+        return new \moodle_url('/mod/quiz/view.php',array('id'=> $id));
     }
 }
 
