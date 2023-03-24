@@ -23,6 +23,8 @@ namespace local_course_reminder;
 defined('MOODLE_INTERNAL') || die();
 require __DIR__.'/emails.php';
 require_once($CFG->dirroot ."/config.php");
+//require_once($CFG->dirroot ."/mod/assign/classes/event/base.php");
+
 
 
 use core\event\assessable_submitted;
@@ -41,11 +43,11 @@ function getData($event)
     $courseID = $event_data["courseid"];
     $courseName = $courseObject->fullname;
     $component = $event_data["component"];
-//    $assignId =
-
+    $contextinstanceid = $event_data["contextinstanceid"];
 
     if($component === "mod_assign"){
         $assignId = $event_data["other"]["assignid"];
+        $assignment_url = get_assignment_url($contextinstanceid,$component);
         $assignmentName = getAssignmentName($assignId, $table="assign");
         $component = "Assignment";
     }elseif($component=="mod_quiz"){
@@ -57,8 +59,9 @@ function getData($event)
         $component = "Assignment / Quiz";
     }
 
+
 //    getAssignmentName($assignId);
-    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName);
+    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignment_url);
 
 }
 
@@ -72,6 +75,14 @@ function getAssignmentName($id,$table){
     $assignmentName = $DB->get_record("$table",array('id'=>$id),'name');
 //    var_dump($assignmentName);
     return $assignmentName;
+}
+
+function get_assignment_url($id, $component){
+    if($component == "mod_assign") {
+        return new \moodle_url('/mod/assign/view.php', array('id'=> $id));
+    }elseif ($component == "mod_quiz"){
+        return new \moodle_url('/mod/quiz/view.php',$id);
+    }
 }
 
 

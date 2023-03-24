@@ -22,14 +22,14 @@
 
 
 
-function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $component, $assignmentName){
+function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $component, $assignmentName,$assignment_url){
     // Send email to user
     $assignmentName = $assignmentName->name;
-
+    $assignment_url = html_writer::link($assignment_url,$assignmentName);
     $emailFrom =core_user::get_noreply_user();
     $emailToUser = $emailofUser;
     $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
-    $message = "Dear ".$emailofUser->firstname . " your " .$component ." = ". $assignmentName . " has changed";
+    $message = "Dear ".$emailofUser->firstname . " your " .$component . $assignment_url . " has changed";
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 
 
