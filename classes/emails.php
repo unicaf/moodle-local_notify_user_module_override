@@ -34,7 +34,7 @@ function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $compon
     //Subject of email
     $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
     //Message of email
-    $message = "Dear ".$emailofUser->firstname . " your " .$component ." ". $assignment_url . " has changed Your date changed from " .$assignmentDate . " and your new date is ".$assignmentOverrideDate ." .";
+    $message = "Dear ".$emailofUser->firstname . " your " .$component ." ". $assignment_url . " has changed Your date changed from " .$assignmentDate . " to  <strong> ".$assignmentOverrideDate ." </strong>.";
     // Function to send email
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 

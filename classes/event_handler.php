@@ -39,6 +39,7 @@ function getData($event)
 //    var_dump($event_data);
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
+    var_dump("USER ID is " .$relatedStudent);
 //    Gets email of student
     $emailofUser= \core_user::get_user($relatedStudent);
 
@@ -59,13 +60,13 @@ function getData($event)
         $assignmentDate = getAssignmentDate($assignId,$table="assign");
 
         //Assignment Override Date
-        $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides");
+        $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides",$relatedStudent);
 //      var_dump("Orignal date is ".$assignmentDate->duedate . " the new date override is " . $assignmentOverrideDate->duedate);
         $assignmentDate = $assignmentDate->duedate;
-        $assignmentDate = date('d-m-Y H:i:s', $assignmentDate);
+        $assignmentDate = date('d-M-Y H:i', $assignmentDate);
 
         $assignmentOverrideDate = $assignmentOverrideDate->duedate;
-        $assignmentOverrideDate = date('d-m-Y H:i:s', $assignmentOverrideDate);
+        $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
 
 
         $component = "Assignment";
@@ -105,10 +106,12 @@ function getAssignmentDate($id, $table){
     return $assignmentDate;
 }
 
-function getAssignmentOverrideDate($id, $table){
+function getAssignmentOverrideDate($id, $table, $relatedStudent){
     global $DB;
 
-    $assignmentDate = $DB->get_record("$table",array('assignid' => $id),'duedate');
+//    $assignmentDate = $DB->get_record("$table",array('assignid' => $id),'duedate');
+    $assignmentDate = $DB->get_record("$table",array('assignid' => $id,"userid"=>$relatedStudent),'duedate');
+
     return $assignmentDate;
 }
 
