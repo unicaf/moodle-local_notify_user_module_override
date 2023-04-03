@@ -22,14 +22,20 @@
 
 
 
-function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $component, $assignmentName,$assignment_url){
+function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url){
     // Send email to user
     $assignmentName = $assignmentName->name;
+    //Creates the url for moodle
     $assignment_url = html_writer::link($assignment_url,$assignmentName);
+    //Email no-reply
     $emailFrom =core_user::get_noreply_user();
+    // Email of the student
     $emailToUser = $emailofUser;
+    //Subject of email
     $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
-    $message = "Dear ".$emailofUser->firstname . " your " .$component ." ". $assignment_url . " has changed";
+    //Message of email
+    $message = "Dear ".$emailofUser->firstname . " your " .$component ." ". $assignment_url . " has changed Your date changed from " .$assignmentDate . " and your new date is ".$assignmentOverrideDate ." .";
+    // Function to send email
     email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
 
 

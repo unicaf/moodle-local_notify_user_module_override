@@ -23,7 +23,7 @@ namespace local_course_reminder;
 defined('MOODLE_INTERNAL') || die();
 require __DIR__.'/emails.php';
 require_once($CFG->dirroot ."/config.php");
-//require_once($CFG->dirroot ."/mod/assign/classes/event/base.php");
+
 
 
 
@@ -31,24 +31,39 @@ use core\event\assessable_submitted;
 use \mod_assign\event\user_override_created;
 function getData($event)
 {
+    // Defines $COURSE object
     global $COURSE;
 
     $courseObject = $COURSE;
     $event_data = $event->get_data();
-
+//    var_dump($event_data);
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
+//    Gets email of student
     $emailofUser= \core_user::get_user($relatedStudent);
 
+    //Course ID
     $courseID = $event_data["courseid"];
+    // Course NAME
     $courseName = $courseObject->fullname;
+    // Either mod_assign or mod_quiz
     $component = $event_data["component"];
+    // This is passed to create the correct URL for the email
     $contextinstanceid = $event_data["contextinstanceid"];
 
     if($component === "mod_assign"){
         $assignId = $event_data["other"]["assignid"];
         $assignment_url = get_assignment_url($contextinstanceid,$component);
         $assignmentName = getAssignmentName($assignId, $table="assign");
+        //Assignment Date
+        $assignmentDate = getAssignmentDate($assignId,$table="assign");
+
+        //Assignment Override Date
+        $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides");
+//      var_dump("Orignal date is ".$assignmentDate->duedate . " the new date override is " . $assignmentOverrideDate->duedate);
+        $assignmentDate = $assignmentDate->duedate;
+        $assignmentOverrideDate = $assignmentOverrideDate->duedate;
+
         $component = "Assignment";
     }elseif($component=="mod_quiz"){
         $assignId = $event_data["other"]["quizid"];
@@ -62,10 +77,11 @@ function getData($event)
 
 
 //    getAssignmentName($assignId);
-    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignment_url);
+    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url);
 
 }
 
+//Gets the name of the assignment/quiz
 function getAssignmentName($id,$table){
     /* In this function we require two parameters , $id and $table. The ID is the ID of the assignment or quiz
     and the table is for the database table (mdl_assign is for assignments and mdl_quiz for quizes)
@@ -78,11 +94,26 @@ function getAssignmentName($id,$table){
     return $assignmentName;
 }
 
-function get_assignment_url($id, $component){
+function getAssignmentDate($id, $table){
+    global $DB;
+
+    $assignmentDate = $DB->get_record("$table", array('id' =>$id), 'duedate');
+    return $assignmentDate;
+}
+
+function getAssignmentOverrideDate($id, $table){
+    global $DB;
+
+    $assignmentDate = $DB->get_record("$table",array('assignid' => $id),'duedate');
+    return $assignmentDate;
+}
+
+//Creates URL link for assignment
+function get_assignment_url($contextinstanceid, $component){
     if($component == "mod_assign") {
-        return new \moodle_url('/mod/assign/view.php', array('id'=> $id));
+        return new \moodle_url('/mod/assign/view.php', array('id'=> $contextinstanceid));
     }elseif ($component == "mod_quiz"){
-        return new \moodle_url('/mod/quiz/view.php',array('id'=> $id));
+        return new \moodle_url('/mod/quiz/view.php',array('id'=> $contextinstanceid));
     }
 }
 
