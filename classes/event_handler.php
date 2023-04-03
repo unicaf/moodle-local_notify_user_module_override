@@ -62,7 +62,11 @@ function getData($event)
         $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides");
 //      var_dump("Orignal date is ".$assignmentDate->duedate . " the new date override is " . $assignmentOverrideDate->duedate);
         $assignmentDate = $assignmentDate->duedate;
+        $assignmentDate = date('d-m-Y H:i:s', $assignmentDate);
+
         $assignmentOverrideDate = $assignmentOverrideDate->duedate;
+        $assignmentOverrideDate = date('d-m-Y H:i:s', $assignmentOverrideDate);
+
 
         $component = "Assignment";
     }elseif($component=="mod_quiz"){
