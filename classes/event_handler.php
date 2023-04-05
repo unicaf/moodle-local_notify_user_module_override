@@ -36,15 +36,16 @@ function getData($event)
 
     $courseObject = $COURSE;
     $event_data = $event->get_data();
-//    var_dump($event_data);
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
-    var_dump("USER ID is " .$relatedStudent);
+
 //    Gets email of student
     $emailofUser= \core_user::get_user($relatedStudent);
 
     //Course ID
-    $courseID = $event_data["courseid"];
+//    $courseID = $event_data["courseid"];
+    $courseID = $courseObject->id;
+
     // Course NAME
     $courseName = $courseObject->fullname;
     // Either mod_assign or mod_quiz
@@ -62,6 +63,8 @@ function getData($event)
         //Assignment Override Date
         $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides",$relatedStudent);
 //      var_dump("Orignal date is ".$assignmentDate->duedate . " the new date override is " . $assignmentOverrideDate->duedate);
+//        var_dump(get_teacher());
+//        die();
         $assignmentDate = $assignmentDate->duedate;
         $assignmentDate = date('d-M-Y H:i', $assignmentDate);
 
@@ -124,6 +127,30 @@ function get_assignment_url($contextinstanceid, $component){
     }
 }
 
+
+//function get_group(){
+//    global $DB;
+//
+//
+//}
+
+
+//function get_teacher(){
+//    global $DB, $COURSE;
+//    $teacher = $DB->get_field("role","id", array("archetype" => "editingteacher"));
+//    $courseID = $COURSE->id;
+//    $groupid = $DB->get_field("groups","id",array("courseid"=>$courseID));
+//    print_r("Group ID is ".$groupid);
+//
+//    $sql = "SELECT courseid, name FROM mdl_groups INNER JOIN mdl_course ON mdl_groups.courseid = mdl_course.id; ";
+//    $run_sql = $DB->get_records_sql($sql);
+//    var_dump($run_sql);
+//
+
+//    return $teacher;
+
+
+//}
 
 
 

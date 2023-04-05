@@ -27,6 +27,9 @@ function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $compon
     $assignmentName = $assignmentName->name;
     //Creates the url for moodle
     $assignment_url = html_writer::link($assignment_url,$assignmentName);
+
+    //Email of Unicaf extenuating Circumstances
+    $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org","extenuating.circumstances@unicaf.org");
     //Email no-reply
     $emailFrom =core_user::get_noreply_user();
     // Email of the student
@@ -34,9 +37,12 @@ function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $compon
     //Subject of email
     $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
     //Message of email
-    $message = "Dear ".$emailofUser->firstname . " your " .$component ." ". $assignment_url . " has changed Your date changed from " .$assignmentDate . " to  <strong> ".$assignmentOverrideDate ." </strong>.";
+    $message = "Dear ".$emailofUser->firstname . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " .$component ." ".$assignment_url  ." has been aprroved .\n\n The assessment deadline for ". $assignment_url ." has been changed from ".$assignmentDate . " to  <strong> ".$assignmentOverrideDate ." </strong>. \n\n"
+    ."In case you have already submitted " .$component ." ".$assignment_url ." prior or on " . $assignmentOverrideDate .", then rest assured that your assignment will be sent for marking .\n\n
+     In case you are yet to submit " .$component ." " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
+     "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on ".$extenuatingCircumstances;
     // Function to send email
-    email_to_user($emailToUser,$emailFrom,$subject,$message,$message,"","","");
+    email_to_user($emailToUser,$emailFrom,$subject,$message,nl2br($message),"","","");
 
 
 }
