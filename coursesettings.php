@@ -21,9 +21,15 @@
  */
 
 
-require('../../config.php');
-print_r("Hello welcome to course settings");
-//$url = new moodle_url('/local/course_reminder/coursesettings.php', array('courseid' => $PAGE->course->id));
-//$PAGE->set_url($url);
+
+require_once('../../config.php');
+global $DB, $COURSE;
+//$course = $DB->get_record('course', array('id' => "$courseid"));
+
+$PAGE->set_url(new moodle_url('/local/course_reminder/coursesettings.php', array('courseid' =>$PAGE->course->id)));
+$PAGE->set_context(context_course::instance($PAGE->course->id));
+$courseid = optional_param("courseid",null,PARAM_INT);
+var_dump($courseid);
+
 
 echo $OUTPUT->header();

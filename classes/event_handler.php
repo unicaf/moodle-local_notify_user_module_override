@@ -153,6 +153,8 @@ function get_assignment_url($contextinstanceid, $component){
 //}
 
 
+//TODO Enable and disable through course settings whole functionality
+
 
 class event_handler
 {
