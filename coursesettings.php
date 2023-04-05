@@ -27,9 +27,15 @@ global $DB, $COURSE;
 //$course = $DB->get_record('course', array('id' => "$courseid"));
 
 $PAGE->set_url(new moodle_url('/local/course_reminder/coursesettings.php', array('courseid' =>$PAGE->course->id)));
-$PAGE->set_context(context_course::instance($PAGE->course->id));
 $courseid = optional_param("courseid",null,PARAM_INT);
-var_dump($courseid);
+$PAGE->set_context(context_course::instance($courseid));
+$PAGE->set_title("Customize Reminder Settings");
+$PAGE->set_heading(get_string('pluginname','local_course_reminder'));
+
 
 
 echo $OUTPUT->header();
+
+print_r("Hello");
+echo $OUTPUT->footer();
+die();
