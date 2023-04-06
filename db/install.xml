@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/course_reminder/db" VERSION="20230405" COMMENT="XMLDB file for Moodle local/course_reminder"
+<XMLDB PATH="local/course_reminder/db" VERSION="20230406" COMMENT="XMLDB file for Moodle local/course_reminder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="local_course_reminder" COMMENT="Default comment for local_course_reminder, please edit me">
+    <TABLE NAME="local_course_reminder" COMMENT="Default comment for local_course_reminder">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Course ID"/>
+        <FIELD NAME="enable" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="1 is plugin is enabled for the course 0 plugin is disabled for the course"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="relatedcourse" TYPE="unique" FIELDS="courseid" COMMENT="Related course from Course table ID"/>
       </KEYS>
     </TABLE>
   </TABLES>
