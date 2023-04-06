@@ -30,3 +30,5 @@ function local_course_reminder_extend_settings_navigation($settingsnav, $context
         $settingnode->add_node($navnode);
     }
 }
+
+

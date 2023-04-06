@@ -20,24 +20,33 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+class checkStatusClass
+{
+
+    function checkStatus($courseid){
+        $this -> courseid = $courseid;
+        global $DB;
+        if
+        ($check_if_enabled = $DB->record_exists("local_course_reminder",["courseid"=>"$courseid"])){
+        }else{
+
+            $this->add_to_table();
+        }
+        echo "Hello world ";
+        echo "If you see this it works";
 
 
-require_once('../../config.php');
-require __DIR__.'/classes/checkStatus.php';
-global $DB, $COURSE;
-//$course = $DB->get_record('course', array('id' => "$courseid"));
+    }
 
-$PAGE->set_url(new moodle_url('/local/course_reminder/coursesettings.php', array('courseid' =>$PAGE->course->id)));
-$courseid = optional_param("courseid",null,PARAM_INT);
-$PAGE->set_context(context_course::instance($courseid));
-$PAGE->set_title("Customize Reminder Settings");
-$PAGE->set_heading(get_string('pluginname','local_course_reminder'));
+    function add_to_table(){
+        global $DB;
+        $record = new stdClass();
+        $record->courseid = $this->courseid;
+        $DB->insert_record('local_course_reminder',$record,false);
 
 
+    }
 
-echo $OUTPUT->header();
 
-$apple = new checkStatusClass();
-$apple->checkStatus($courseid);
-echo $OUTPUT->footer();
-die();
+
+}
