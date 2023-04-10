@@ -24,20 +24,39 @@
 
 require_once('../../config.php');
 require __DIR__.'/classes/checkStatus.php';
-global $DB, $COURSE;
-//$course = $DB->get_record('course', array('id' => "$courseid"));
+require_once("$CFG->libdir/formslib.php");
+require_once($CFG->dirroot . '/local/course_reminder/classes/form/coursesettingsform.php');
+global $DB, $COURSE,$PAGE;
 
-$PAGE->set_url(new moodle_url('/local/course_reminder/coursesettings.php', array('courseid' =>$PAGE->course->id)));
-$courseid = optional_param("courseid",null,PARAM_INT);
+$courseid = required_param("id",PARAM_INT);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+
+$PAGE->set_url(new moodle_url('/local/course_reminder/coursesettings.php', array('id' =>$courseid)));
+
+
 $PAGE->set_context(context_course::instance($courseid));
 $PAGE->set_title("Customize Reminder Settings");
 $PAGE->set_heading(get_string('pluginname','local_course_reminder'));
+//
 
 
+
+$isEnabled = new checkStatusClass();
+$isEnabled->checkStatus($courseid);
+
+$customdata = array('id' =>$courseid);
+$mform = new coursesettingsform(null,$customdata);
+
+if ($mform->is_cancelled()){
+    redirect(new moodle_url('/course/view.php',array('id'=>$courseid)));
+
+}else if ($fromform = $mform->get_data()){
+
+}
 
 echo $OUTPUT->header();
-
-$apple = new checkStatusClass();
-$apple->checkStatus($courseid);
+//var_dump($course);
+$parameter = $PAGE->url->raw_out();
+print_r($parameter);
+$mform->display();
 echo $OUTPUT->footer();
-die();

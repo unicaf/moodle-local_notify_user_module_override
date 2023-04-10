@@ -26,14 +26,10 @@ class checkStatusClass
     function checkStatus($courseid){
         $this -> courseid = $courseid;
         global $DB;
-        if
-        ($check_if_enabled = $DB->record_exists("local_course_reminder",["courseid"=>"$courseid"])){
+        if ($DB->record_exists("local_course_reminder",["courseid"=>"$courseid"])){
         }else{
-
             $this->add_to_table();
         }
-        echo "Hello world ";
-        echo "If you see this it works";
 
 
     }

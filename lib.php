@@ -15,7 +15,7 @@ function local_course_reminder_extend_settings_navigation($settingsnav, $context
 
     if ($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
         $name = get_string('pluginname', 'local_course_reminder');
-        $url = new moodle_url('/local/course_reminder/coursesettings.php', array('courseid' => $PAGE->course->id));
+        $url = new moodle_url('/local/course_reminder/coursesettings.php', array('id' => $PAGE->course->id));
         $navnode = navigation_node::create(
             $name,
             $url,
