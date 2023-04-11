@@ -37,12 +37,10 @@ $PAGE->set_url(new moodle_url('/local/course_reminder/coursesettings.php', array
 $PAGE->set_context(context_course::instance($courseid));
 $PAGE->set_title("Customize Reminder Settings");
 $PAGE->set_heading(get_string('pluginname','local_course_reminder'));
-//
 
+$isEnabled = new checkStatusClass($courseid);
+$checkifDatabase = $isEnabled->checkStatus();
 
-
-$isEnabled = new checkStatusClass();
-$isEnabled->checkStatus($courseid);
 
 $customdata = array('id' =>$courseid);
 $mform = new coursesettingsform(null,$customdata);
@@ -51,8 +49,7 @@ if ($mform->is_cancelled()){
     redirect(new moodle_url('/course/view.php',array('id'=>$courseid)));
 
 }else if ($fromform = $mform->get_data()){
-//    $isEnabled->set_enable($fromform);
-        $isEnabled ->get_id_table();
+
 
 die();
 

@@ -22,12 +22,21 @@
 
 class checkStatusClass
 {
+    function __construct($courseid){
+        echo "This is the new Course id from constructor ($courseid)";
+        $this->courseid = $courseid;
+//        var_dump($this);
+    }
 
-    function checkStatus($courseid){
-        $this -> courseid = $courseid;
-
+    function checkStatus(){
         global $DB;
-        if ($DB->record_exists("local_course_reminder",["courseid"=>"$courseid"])){
+//        $this -> courseid = $courseid;
+
+        $this->tableid = $this->get_id_table();
+        $this->isEnabled = $this->is_enabled();
+        $recordExisits = $DB->record_exists("local_course_reminder",["courseid"=>"$this->courseid"]);
+        if ($recordExisits){
+
         }else{
             $this->add_to_table();
         }
@@ -36,6 +45,7 @@ class checkStatusClass
     }
 
     function add_to_table(){
+        // if record is not in database its adds it
         global $DB;
         $record = new stdClass();
         $record->courseid = $this->courseid;
@@ -45,18 +55,30 @@ class checkStatusClass
     }
 
     function set_enable($fromform){
+        var_dump($fromform);
         global $DB;
 
-        $record = new stdClass();
-       $this->enable = $fromform->enable;
+//        $record = new stdClass();
+//       $this->enable = $fromform->enable;
+
+
 
        var_dump($this);
+       die();
        $DB->update_record('local_course_reminder',$record);
 
 
     }
 
+    function is_enabled(){
+        //Gets enable frield from database on table
+        global $DB;
+        $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'enable');
+        return $is_enabled;
+    }
+
     function get_id_table(){
+        //Gets id of instance for the coruseid
         global $DB;
         $table_id = $DB->get_record('local_course_reminder',['courseid' => $this->courseid],'id');
 //        var_dump($this);
@@ -64,7 +86,7 @@ class checkStatusClass
         return $table_id;
 
     }
-     //TODO GET RECORD FROM DATABASE ID
+
 
 
 
