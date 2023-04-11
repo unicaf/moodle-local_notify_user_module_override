@@ -25,6 +25,7 @@ class checkStatusClass
 
     function checkStatus($courseid){
         $this -> courseid = $courseid;
+
         global $DB;
         if ($DB->record_exists("local_course_reminder",["courseid"=>"$courseid"])){
         }else{
@@ -42,6 +43,30 @@ class checkStatusClass
 
 
     }
+
+    function set_enable($fromform){
+        global $DB;
+
+        $record = new stdClass();
+       $this->enable = $fromform->enable;
+
+       var_dump($this);
+       $DB->update_record('local_course_reminder',$record);
+
+
+    }
+
+    function get_id_table(){
+        global $DB;
+        $table_id = $DB->get_record('local_course_reminder',['courseid' => $this->courseid],'id');
+//        var_dump($this);
+//        var_dump($table_id);
+        return $table_id;
+
+    }
+     //TODO GET RECORD FROM DATABASE ID
+
+
 
 
 
