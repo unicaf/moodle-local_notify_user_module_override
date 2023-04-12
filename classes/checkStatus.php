@@ -23,8 +23,10 @@
 class checkStatusClass
 {
     function __construct($courseid){
-        echo "This is the new Course id from constructor ($courseid)";
+//        echo "This is the new Course id from constructor ($courseid)";
         $this->courseid = $courseid;
+        $this->tableID = $this->get_id_table();
+
 //        var_dump($this);
     }
 
@@ -32,7 +34,7 @@ class checkStatusClass
         global $DB;
 //        $this -> courseid = $courseid;
 
-        $this->tableid = $this->get_id_table();
+//        $this->tableid = $this->get_id_table();
         $this->isEnabled = $this->is_enabled();
         $recordExisits = $DB->record_exists("local_course_reminder",["courseid"=>"$this->courseid"]);
         if ($recordExisits){
@@ -55,17 +57,17 @@ class checkStatusClass
     }
 
     function set_enable($fromform){
-        var_dump($fromform);
+
         global $DB;
+//        var_dump($fromform);
+        $record1 = new stdClass();
 
-//        $record = new stdClass();
-//       $this->enable = $fromform->enable;
+        $record1->enable = $fromform->enable;
+        $record1 -> id = $this->tableID->id;
+
+       $DB->update_record('local_course_reminder', $record1);
 
 
-
-       var_dump($this);
-       die();
-       $DB->update_record('local_course_reminder',$record);
 
 
     }

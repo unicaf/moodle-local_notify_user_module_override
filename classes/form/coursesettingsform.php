@@ -21,8 +21,6 @@ class coursesettingsform extends moodleform
 
         $value_from_database_enable = new checkStatusClass($courseid);
         $value_from_database_enable = $value_from_database_enable->is_enabled();
-        var_dump($value_from_database_enable->enable);
-//        die();
         $mform = $this->_form;
         $mform->addElement('select', 'enable',"Enable",$OPTIONS);
         $mform->setType('enable', PARAM_INT);

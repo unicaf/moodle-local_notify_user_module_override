@@ -40,8 +40,6 @@ $PAGE->set_heading(get_string('pluginname','local_course_reminder'));
 
 $isEnabled = new checkStatusClass($courseid);
 $checkifDatabase = $isEnabled->checkStatus();
-
-
 $customdata = array('id' =>$courseid);
 $mform = new coursesettingsform(null,$customdata);
 
@@ -50,8 +48,7 @@ if ($mform->is_cancelled()){
 
 }else if ($fromform = $mform->get_data()){
 
-
-die();
+    $isEnabled->set_enable($fromform);
 
 }
 
