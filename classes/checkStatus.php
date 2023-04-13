@@ -58,8 +58,9 @@ class checkStatusClass
 
     function set_enable($fromform){
 
+        // Sets field enable to 0 or 1 within the coursesettings.php
         global $DB;
-//        var_dump($fromform);
+
         $record1 = new stdClass();
 
         $record1->enable = $fromform->enable;
@@ -73,7 +74,7 @@ class checkStatusClass
     }
 
     function is_enabled(){
-        //Gets enable frield from database on table
+        //Gets enable field from database on table
         global $DB;
         $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'enable');
         return $is_enabled;

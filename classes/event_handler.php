@@ -23,6 +23,7 @@ namespace local_course_reminder;
 defined('MOODLE_INTERNAL') || die();
 require __DIR__.'/emails.php';
 require_once($CFG->dirroot ."/config.php");
+require __DIR__.'/checkStatus.php';
 
 
 
@@ -31,11 +32,27 @@ use core\event\assessable_submitted;
 use \mod_assign\event\user_override_created;
 function getData($event)
 {
+
+
     // Defines $COURSE object
     global $COURSE;
-
     $courseObject = $COURSE;
     $event_data = $event->get_data();
+    $courseID = $courseObject->id;
+    //Declares the class
+    $add_to_table_reminders = new \checkStatusClass($courseID);
+//    var_dump($add_to_table_reminders);
+    // Adds to table 
+    $add_to_table_reminders->checkStatus();
+
+    $is_enabled = $add_to_table_reminders->is_enabled();
+    $is_enabled = $is_enabled->enable;
+    // This checks to proceed with the script if the enable field in local_course_reminder table is set to 1 (enabled)
+    if(!$is_enabled == "1"){
+        return;
+
+    }
+
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
 
@@ -44,7 +61,7 @@ function getData($event)
 
     //Course ID
 //    $courseID = $event_data["courseid"];
-    $courseID = $courseObject->id;
+
 
     // Course NAME
     $courseName = $courseObject->fullname;
