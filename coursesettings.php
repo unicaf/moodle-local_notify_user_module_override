@@ -49,6 +49,8 @@ if ($mform->is_cancelled()){
 }else if ($fromform = $mform->get_data()){
 
     $isEnabled->set_enable($fromform);
+    redirect(new moodle_url('/course/view.php',array('id'=>$courseid)));
+
 
 }
 
