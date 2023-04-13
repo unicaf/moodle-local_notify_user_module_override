@@ -56,7 +56,7 @@ if ($mform->is_cancelled()){
 
 echo $OUTPUT->header();
 //var_dump($course);
-$parameter = $PAGE->url->raw_out();
-print_r($parameter);
+//$parameter = $PAGE->url->raw_out();
+//print_r($parameter);
 $mform->display();
 echo $OUTPUT->footer();
