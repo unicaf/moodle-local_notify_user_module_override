@@ -22,3 +22,4 @@
  */
 defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = "Course Reminders";
+$string['pluginfullname'] = "local_course_reminder";

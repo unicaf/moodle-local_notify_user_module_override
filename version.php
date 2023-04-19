@@ -23,5 +23,5 @@
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->component = 'local_course_reminder';
-$plugin->version = 2023031309;
+$plugin->version = 2023031319;
 $plugin->requires = 2012120300; // Moodle version
