@@ -41,17 +41,15 @@ function getData($event)
     $courseID = $courseObject->id;
     //Declares the class
     $add_to_table_reminders = new \checkStatusClass($courseID);
+    $who_to_send = new \checkStatusClass($courseID);
+
 //    var_dump($add_to_table_reminders);
     // Adds to table 
     $add_to_table_reminders->checkStatus();
 
     $is_enabled = $add_to_table_reminders->is_enabled();
     $is_enabled = $is_enabled->enable;
-    // This checks to proceed with the script if the enable field in local_course_reminder table is set to 1 (enabled)
-    if(!$is_enabled == "1"){
-        return;
 
-    }
 
     //related user is the user which is affected - student
     $relatedStudent = $event_data["relateduserid"];
@@ -69,6 +67,10 @@ function getData($event)
     $component = $event_data["component"];
     // This is passed to create the correct URL for the email
     $contextinstanceid = $event_data["contextinstanceid"];
+
+
+    // This checks to proceed with the script if the enable field in local_course_reminder table is set to 1 (enabled)
+
 
     if($component === "mod_assign"){
         $assignId = $event_data["other"]["assignid"];
@@ -99,6 +101,16 @@ function getData($event)
         //create error message
         $component = "Assignment / Quiz";
     }
+
+
+    $who_to_send->who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url);
+    var_dump($who_to_send);
+    if(!$is_enabled == "1"){
+        return;
+
+    }
+
+    die();
 
 
 //    getAssignmentName($assignId);

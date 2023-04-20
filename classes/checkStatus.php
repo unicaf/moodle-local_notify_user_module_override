@@ -90,6 +90,41 @@ class checkStatusClass
 
     }
 
+    function who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url){
+        $this->studentEmail = $emailofUser->email;
+        $this->studentid = $emailofUser->id;
+        $this->courseName = $courseName;
+        $this->component = $component;
+        $this->assignmentname = $assignmentName;
+        $this->assignmentid = $assignId;
+//        var_dump($this);
+        global $DB;
+        $table = "local_course_reminder_email";
+        $dataObj = new stdClass();
+        $dataObj->studentEmail = $emailofUser->email;
+        $dataObj->studentid = $emailofUser->id;
+        $dataObj->coursename = $courseName;
+        $dataObj->component = $component;
+        $dataObj->assigmentname = $assignmentName;
+        $dataObj->assignmentid = $assignId;
+        $dataObj->courseid = $this->courseid;
+        $dataObj->emailtosent = $this->is_enabled()->enable;
+
+        //Stops duplicate entry.
+        $record_exisits = $DB->record_exists($table,["courseid"=>"$dataObj->courseid", "studentid"=>"$dataObj->studentid","assignmentid"=>"$dataObj->assignmentid"]);
+        if(!$record_exisits){
+            //Adds to the database
+            $DB->insert_record($table,$dataObj);
+        }
+
+
+//        var_dump($dataObj);
+
+
+
+
+    }
+
 
 
 
