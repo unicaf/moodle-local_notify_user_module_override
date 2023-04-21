@@ -47,3 +47,46 @@ function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $compon
 
 
 }
+
+
+function send_email_by_cron(){
+    global $DB;
+    $table= 'local_course_reminder_email';
+    $get_record_for_cron = $DB->get_records($table,["emailtosent"=>"1","emailsent"=>"0"],'',"*");
+
+
+    $keys =array_keys($get_record_for_cron);
+    for($i=0; $i <count($get_record_for_cron); $i++){
+        echo $keys[$i] . "{<br>";
+        foreach($get_record_for_cron[$keys[$i]] as $key => $value){
+                if ($key === 'id'){
+                    email_sent($table, $value);
+                }
+            echo $key . " : " . $value ."<br>";
+
+        }
+        echo "}<br>";
+    }
+
+
+//    var_dump(email_sent($table));
+
+}
+
+function email_sent($table, $id){
+    global $DB;
+
+//    var_dump($id);
+    $object = new stdClass();
+    $object->id = $id;
+    $object->emailsent = "1";
+    $object->emailtosent = "0";
+    $object->emailtime = sent_email_time();
+    $email_is_sent = $DB->update_record($table,$object);
+
+
+
+}
+function sent_email_time(){
+    return time();
+}

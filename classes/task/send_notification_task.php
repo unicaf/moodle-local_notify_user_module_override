@@ -1,6 +1,7 @@
 <?php
 
 namespace local_course_reminder\task;
+require_once($CFG->dirroot ."/local/course_reminder/classes/emails.php");
 class send_notification_task extends \core\task\scheduled_task
 {
     public function get_name()
@@ -11,10 +12,7 @@ class send_notification_task extends \core\task\scheduled_task
 
     public function execute()
     {
-        mtrace("My task started");
-
-
-        mtrace("My task finished");
+       send_email_by_cron();
 
 
     }

@@ -85,36 +85,36 @@ function getData($event)
 //        var_dump(get_teacher());
 //        die();
         $assignmentDate = $assignmentDate->duedate;
-        $assignmentDate = date('d-M-Y H:i', $assignmentDate);
+
+//        $assignmentDate = date('d-M-Y H:i', $assignmentDate);
 
         $assignmentOverrideDate = $assignmentOverrideDate->duedate;
-        $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
+//        $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
 
 
-        $component = "Assignment";
+        $component = "assignment";
     }elseif($component=="mod_quiz"){
         $assignId = $event_data["other"]["quizid"];
         $assignment_url = get_assignment_url($contextinstanceid,$component);
         $assignmentName = getAssignmentName($assignId, $table="quiz");
-        $component = "Quiz";
+        $component = "quiz";
     }else{
         //create error message
-        $component = "Assignment / Quiz";
+        $component = "assignment / quiz";
     }
 
 
     $who_to_send->who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url);
-    var_dump($who_to_send);
+
     if(!$is_enabled == "1"){
         return;
 
     }
 
-    die();
-
-
+//    send_email_by_cron();
+//    die();
 //    getAssignmentName($assignId);
-    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url);
+//    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url);
 
 }
 
