@@ -61,6 +61,9 @@ function send_email_by_cron(){
         foreach($get_record_for_cron[$keys[$i]] as $key => $value){
                 if ($key === 'id'){
                     email_sent($table, $value);
+                    var_dump($key);
+
+
                 }
             echo $key . " : " . $value ."<br>";
 
