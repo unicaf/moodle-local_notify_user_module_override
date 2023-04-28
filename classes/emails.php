@@ -171,7 +171,6 @@ function sent_email_time(){
 function email_Student($studentObj){
     global $USER;
         print_r($studentObj);
-        var_dump($studentObj->id);
     // Send email to user
     $assignmentName = $studentObj->assignmentid;
     //Creates the url for moodle
@@ -184,7 +183,7 @@ function email_Student($studentObj){
     // Email of the student
     $student = $studentObj->studentid;
     $emailofStudent= \core_user::get_user($student);
-    print_r($emailofStudent);
+//    print_r($emailofStudent);
 
     //Subject of email
     $subject = "Your course " .$studentObj->courseid ." has some changes in ".$studentObj->component .  " has changed dates";
@@ -197,7 +196,7 @@ function email_Student($studentObj){
     // Function to send email
     $message = "This is a test that it works";
     email_to_user($emailofStudent,$emailFrom,$subject,$message,nl2br($message),"","","");
-
+    email_sent("local_course_reminder_email",$studentObj->id);
 
 
 }
