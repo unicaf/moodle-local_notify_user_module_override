@@ -111,7 +111,7 @@ function getData($event)
 
     }
 
-//    send_email_by_cron();
+    send_email_by_cron();
 //    die();
 //    getAssignmentName($assignId);
 //    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url);
