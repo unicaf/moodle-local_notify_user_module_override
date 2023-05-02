@@ -170,7 +170,7 @@ function sent_email_time(){
 
 function email_Student($studentObj){
     global $USER;
-        print_r($studentObj);
+//        print_r($studentObj);
     // Send email to user
     $assignmentName = $studentObj->assignmentid;
     //Creates the url for moodle
@@ -180,10 +180,13 @@ function email_Student($studentObj){
     $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org","extenuating.circumstances@unicaf.org");
     //Email no-reply
     $emailFrom =core_user::get_noreply_user();
+//    $emailFrom = $emailFrom->email;
+//    print_r($emailFrom);
     // Email of the student
     $student = $studentObj->studentid;
     $emailofStudent= \core_user::get_user($student);
-//    print_r($emailofStudent);
+//    $emailofStudent = $emailofStudent->email;
+    print_r("Email is being sent to user with ID " .$emailofStudent->id);
 
     //Subject of email
     $subject = "Your course " .$studentObj->courseid ." has some changes in ".$studentObj->component .  " has changed dates";
