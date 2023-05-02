@@ -86,10 +86,10 @@ function getData($event)
 //        die();
         $assignmentDate = $assignmentDate->duedate;
 
-//        $assignmentDate = date('d-M-Y H:i', $assignmentDate);
+
 
         $assignmentOverrideDate = $assignmentOverrideDate->duedate;
-//        $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
+
 
 
         $component = "assignment";
@@ -104,7 +104,7 @@ function getData($event)
     }
 
 
-    $who_to_send->who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url);
+    $who_to_send->who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url,$contextinstanceid);
 
     if(!$is_enabled == "1"){
         return;

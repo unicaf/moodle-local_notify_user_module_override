@@ -90,7 +90,7 @@ class checkStatusClass
 
     }
 
-    function who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url){
+    function who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url,$contextinstanceid){
         $this->studentEmail = $emailofUser->email;
         $this->studentid = $emailofUser->id;
         $this->courseName = $courseName;
@@ -112,6 +112,7 @@ class checkStatusClass
         $dataObj->assignmentid = $assignId;
         $dataObj->assignmentdate = $assignmentDate;
         $dataObj->assignmentoverridedate = $assignmentOverrideDate;
+        $dataObj->contextinstanceid = $contextinstanceid;
         $dataObj->courseid = $this->courseid;
         $dataObj->emailtosent = $this->is_enabled()->enable;
 
