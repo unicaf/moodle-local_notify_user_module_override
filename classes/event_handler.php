@@ -63,6 +63,7 @@ function getData($event)
 
     // Course NAME
     $courseName = $courseObject->fullname;
+
     // Either mod_assign or mod_quiz
     $component = $event_data["component"];
     // This is passed to create the correct URL for the email

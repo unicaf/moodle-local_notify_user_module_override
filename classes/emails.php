@@ -120,9 +120,12 @@ function email_Student($studentObj){
     $assignmentName = getAssignmentName($assignmentID,$component);
     $assignmentName = $assignmentName->name;
     $assignment_url = get_assignment_url($contextinstanceid, $component);
-    print_r($assignmentName);
-    print_r($assignment_url);
     $assignment_url = html_writer::link($assignment_url,$assignmentName);
+    $courseid = $studentObj->courseid;
+    $courseFullName = getCourseName($courseid)->fullname;
+    $courseShortName = getCourseName($courseid)->shortname;
+
+
 
     $assignmentDate = $studentObj->assignmentdate;
     $assignmentDate = date('d-M-Y H:i', $assignmentDate);
@@ -133,9 +136,9 @@ function email_Student($studentObj){
     echo nl2br("Email is being sent to user with ID " .$emailofStudent->id ."\n");
 
     //Subject of email
-    $subject = "Your course " .$studentObj->courseid ." has some changes in ".$component .  " has changed dates";
+    $subject = "Your course " .$courseFullName ." has some changes in ".$component .  " has changed dates";
     //Message of email
-    $message = "Dear ".$studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " .$component ." ".$assignment_url  ."
+    $message = "Dear ".$studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  "  .$courseShortName ." " .$courseFullName.  "
         has been aprroved .\n\n The assessment deadline for ". $assignment_url ." has been changed from ".$assignmentDate . " to  <strong> ".$assignmentOverrideDate ." </strong>. \n\n"
         ."In case you have already submitted " .$component ." ".$assignment_url ." prior or on " . $assignmentOverrideDate .", then rest assured that your assignment will be sent for marking .\n\n
         In case you are yet to submit " .$component ." " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
@@ -168,4 +171,10 @@ function getAssignmentName($id,$component){
     }
 //    var_dump($assignmentName);
     return $assignmentName;
+}
+
+function getCourseName($courseid){
+    global $DB;
+    $name = $DB->get_record('course', array('id'=>$courseid),'fullname,shortname');
+    return $name;
 }
