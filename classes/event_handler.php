@@ -119,6 +119,14 @@ function getData($event)
 
 }
 
+function updateData($event){
+    global $COURSE;
+    $courseObject = $COURSE;
+    $event_data = $event->get_data();
+    var_dump($event_data);
+    die();
+}
+
 //Gets the name of the assignment/quiz
 function getAssignmentName($id,$table){
     /* In this function we require two parameters , $id and $table. The ID is the ID of the assignment or quiz
@@ -192,10 +200,11 @@ class event_handler
     public static function assign_user_override_created(\mod_assign\event\user_override_created $event)
     {
 
-
         return getData($event);
     }
-    public static function assign_user_override_updated(){
+    public static function assign_user_override_updated(\mod_assign\event\user_override_updated $event){
+
+        return updateData($event);
 
     }
 
