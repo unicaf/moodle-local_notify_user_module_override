@@ -31,9 +31,14 @@ $observers = [
         'eventname' => '\mod_assign\event\user_override_updated',
         'callback' => '\local_course_reminder\event_handler::assign_user_override_updated',
     ],
+    [
+        //Assignment User override deleted
+        'eventname' => '\mod_assign\event\user_override_deleted',
+        'callback' => '\local_course_reminder\event_handler::assign_user_override_deleted',
+    ],
     [   //Quiz override created
         'eventname' => '\mod_quiz\event\user_override_created',
-        'callback' => '\local_course_reminder\event_handler::quiz_user_override_created'
+        'callback' => '\local_course_reminder\event_handler::quiz_user_override_created',
     ],
     [   //Quiz override updated
         'eventname' => '\mod_quiz\event\user_override_updated',

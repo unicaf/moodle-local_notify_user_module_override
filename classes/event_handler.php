@@ -141,6 +141,37 @@ function updateData($event){
 
 }
 
+function deleteData($event){
+    global $COURSE;
+    $courseObject = $COURSE;
+    $event_data = $event->get_data();
+//    var_dump($event_data);
+    $courseid = $event_data["courseid"];
+    $studentid = $event_data["relateduserid"];
+    $contextinstanceid = $event_data["contextinstanceid"];
+    $table_id = get_id_reminder_email_table($courseid,$studentid,$contextinstanceid);
+
+    deleteReminderEmailTable($table_id);
+
+
+//    die();
+}
+
+function get_id_reminder_email_table($courseid,$studentid,$contextinstanceid){
+    global $DB;
+    $table = "local_course_reminder_email";
+    $get_id = $DB->get_record($table,["courseid" => $courseid, "studentid"=>$studentid, "contextinstanceid"=>$contextinstanceid],"id");
+    $get_id = $get_id->id;
+    return $get_id;
+}
+
+function deleteReminderEmailTable($id){
+    global $DB;
+    $table = "local_course_reminder_email";
+    $deleteRecord = $DB->delete_records($table,["id"=>$id]);
+
+}
+
 function getAssignOverride($userid, $assignid){
     global $DB;
     $record = $DB->get_record("assign_overrides",array('userid'=>$userid,'assignid'=>$assignid),'allowsubmissionsfromdate,duedate,cutoffdate,id');
@@ -244,6 +275,10 @@ class event_handler
 
         return updateData($event);
 
+    }
+    public static function assign_user_override_deleted(\mod_assign\event\user_override_deleted $event){
+
+        return deleteData($event);
     }
 
     public static function quiz_user_override_created(\mod_quiz\event\user_override_created $event)
