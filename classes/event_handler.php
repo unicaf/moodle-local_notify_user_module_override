@@ -22,13 +22,14 @@
 namespace local_course_reminder;
 defined('MOODLE_INTERNAL') || die();
 require __DIR__.'/emails.php';
-require_once($CFG->dirroot ."/config.php");
+//require_once($CFG->dirroot ."/config.php");
 require __DIR__.'/checkStatus.php';
 
 
 
 
 use core\event\assessable_submitted;
+use core_analytics\course;
 use \mod_assign\event\user_override_created;
 function getData($event)
 {
@@ -123,8 +124,45 @@ function updateData($event){
     global $COURSE;
     $courseObject = $COURSE;
     $event_data = $event->get_data();
-    var_dump($event_data);
-    die();
+    $userid = $event_data["relateduserid"];
+    $courseid = $event_data["courseid"];
+    $contextinstanceid = $event_data["contextinstanceid"];
+    $assignid = $event_data['other']["assignid"];
+
+
+    $record = getAssignOverride($userid,$assignid);
+    $newDueDate = $record->duedate;
+    $newAllowSubmissionFromDate = $record->allowsubmissionsfromdate;
+    $newCutOffDate = $record->cutoffdate;
+
+//    var_dump($record);
+//    die();
+    updateReminderEmailTable($courseid,$userid,$assignid,$newCutOffDate,$newDueDate,$contextinstanceid);
+
+}
+
+function getAssignOverride($userid, $assignid){
+    global $DB;
+    $record = $DB->get_record("assign_overrides",array('userid'=>$userid,'assignid'=>$assignid),'allowsubmissionsfromdate,duedate,cutoffdate,id');
+//    var_dump($record);
+//    die();
+    return $record;
+}
+function updateReminderEmailTable($courseid, $studentid, $assignid,$newCutOffDate,$newDueDate, $contextinstanceid){
+    global $DB;
+    $table = 'local_course_reminder_email';
+    $record = $DB->get_record('local_course_reminder_email',array('courseid'=>$courseid, 'studentid'=>$studentid,'assignmentid'=>$assignid, 'contextinstanceid'=>$contextinstanceid),'*' );
+
+
+
+    $object = new \stdClass();
+
+    $object->id = $record->id;
+    $object->assignmentoverridedate = $newDueDate;
+    $object->emailtosent = "1";
+    $object->emailsent = "0";
+
+    $updateObj = $DB->update_record($table,$object);
 }
 
 //Gets the name of the assignment/quiz
