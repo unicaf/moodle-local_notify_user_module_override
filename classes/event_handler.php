@@ -75,14 +75,15 @@ function getData($event)
 
 
     if($component === "mod_assign"){
+        $component = "assignment";
         $assignId = $event_data["other"]["assignid"];
         $assignment_url = get_assignment_url($contextinstanceid,$component);
         $assignmentName = getAssignmentName($assignId, $table="assign");
         //Assignment Date
-        $assignmentDate = getAssignmentDate($assignId,$table="assign");
+        $assignmentDate = getAssignmentDate($assignId,$table="assign",$component);
 
         //Assignment Override Date
-        $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides",$relatedStudent);
+        $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="assign_overrides",$relatedStudent,$component);
 //      var_dump("Orignal date is ".$assignmentDate->duedate . " the new date override is " . $assignmentOverrideDate->duedate);
 //        var_dump(get_teacher());
 //        die();
@@ -94,12 +95,23 @@ function getData($event)
 
 
 
-        $component = "assignment";
+
     }elseif($component=="mod_quiz"){
+        $component = "quiz";
         $assignId = $event_data["other"]["quizid"];
         $assignment_url = get_assignment_url($contextinstanceid,$component);
         $assignmentName = getAssignmentName($assignId, $table="quiz");
-        $component = "quiz";
+        $assignmentName = $assignmentName->name;
+
+        //Quiz Date
+        $assignmentDate = getAssignmentDate($assignId,$table="quiz",$component);
+        $assignmentDate = $assignmentDate->timeclose;
+
+        //Assignment Override Date
+        $assignmentOverrideDate = getAssignmentOverrideDate($assignId,$table="quiz_overrides",$relatedStudent,$component);
+        $assignmentOverrideDate = $assignmentOverrideDate->timeclose;
+
+
     }else{
         //create error message
         $component = "assignment / quiz";
@@ -156,15 +168,14 @@ function deleteData($event){
 
 //    die();
 }
-
+//Gets ID from local_course_reminder_email
 function get_id_reminder_email_table($courseid,$studentid,$contextinstanceid){
     global $DB;
     $table = "local_course_reminder_email";
     $get_id = $DB->get_record($table,["courseid" => $courseid, "studentid"=>$studentid, "contextinstanceid"=>$contextinstanceid],"id");
-    $get_id = $get_id->id;
-    return $get_id;
+    return $get_id->id;
 }
-
+//Deletes record in local_course_reminder_email
 function deleteReminderEmailTable($id){
     global $DB;
     $table = "local_course_reminder_email";
@@ -209,20 +220,29 @@ function getAssignmentName($id,$table){
     return $assignmentName;
 }
 
-function getAssignmentDate($id, $table){
+function getAssignmentDate($id, $table,$component){
     global $DB;
 
-    $assignmentDate = $DB->get_record("$table", array('id' =>$id), 'duedate');
-    return $assignmentDate;
+    if($component =="assignment" && $table =="assign"){
+        return $DB->get_record($table, array('id' =>$id), 'duedate');
+    }
+    elseif ($component =="quiz" && $table =="quiz"){
+        return $DB->get_record($table ,array('id'=>$id),'timeclose');
+    }
+
+
 }
 
-function getAssignmentOverrideDate($id, $table, $relatedStudent){
+function getAssignmentOverrideDate($id, $table, $relatedStudent,$component){
     global $DB;
+    if($component =="assignment" && $table =="assign_overrides") {
 
-//    $assignmentDate = $DB->get_record("$table",array('assignid' => $id),'duedate');
-    $assignmentDate = $DB->get_record("$table",array('assignid' => $id,"userid"=>$relatedStudent),'duedate');
+        return $DB->get_record($table, array('assignid' => $id, "userid" => $relatedStudent), 'duedate');
+    }elseif ($component =="quiz" && $table =="quiz_overrides"){
+        return $DB->get_record($table,array('quiz'=> $id, 'userid'=>$relatedStudent),'timeclose');
+    }
 
-    return $assignmentDate;
+
 }
 
 //Creates URL link for assignment
