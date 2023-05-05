@@ -157,7 +157,8 @@ function deleteData($event){
     global $COURSE;
     $courseObject = $COURSE;
     $event_data = $event->get_data();
-//    var_dump($event_data);
+    var_dump($event_data);
+
     $courseid = $event_data["courseid"];
     $studentid = $event_data["relateduserid"];
     $contextinstanceid = $event_data["contextinstanceid"];
@@ -308,6 +309,10 @@ class event_handler
     public static function quiz_user_override_updated()
     {
 
+    }
+    public static function quiz_user_override_deleted(\mod_quiz\event\user_override_deleted $event){
+
+        return deleteData($event);
     }
 
 

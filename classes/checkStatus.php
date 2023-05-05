@@ -137,11 +137,6 @@ class checkStatusClass
         }
 
 
-
-
-
-
-
     }
 
 
