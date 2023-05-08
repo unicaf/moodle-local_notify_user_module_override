@@ -155,6 +155,9 @@ function updateData($event){
         $assignid = $event_data['other']["assignid"];
     }
     $record = getAssignOverride($userid,$assignid,$component);
+    var_dump($record);
+
+
 
 
     if($component == 'quiz'){
@@ -172,7 +175,7 @@ function updateData($event){
 
 //    var_dump($record);
 //    die();
-    updateReminderEmailTable($courseid,$userid,$assignid,$newCutOffDate,$newDueDate,$contextinstanceid);
+    updateReminderEmailTable($courseid,$userid,$assignid,$newCutOffDate,$newDueDate,$contextinstanceid,$component);
 //TODO FIX QUIZ UPDATE
 }
 
@@ -216,7 +219,7 @@ function getAssignOverride($userid, $assignid,$component){
     }elseif ($component == "assignment"){
         $table = "assign_overrides";
         $assignmentOrQuiz = "assignid";
-        $fields = 'allowsubmissionsfromdate,duedate,cuttoffdate,id';
+        $fields = 'allowsubmissionsfromdate,duedate,cutoffdate,id';
 
     }
 
@@ -225,12 +228,21 @@ function getAssignOverride($userid, $assignid,$component){
 //    die();
     return $record;
 }
-function updateReminderEmailTable($courseid, $studentid, $assignid,$newCutOffDate,$newDueDate, $contextinstanceid){
+function updateReminderEmailTable($courseid, $studentid, $assignid,$newCutOffDate,$newDueDate, $contextinstanceid,$component){
     global $DB;
     $table = 'local_course_reminder_email';
-    $record = $DB->get_record('local_course_reminder_email',array('courseid'=>$courseid, 'studentid'=>$studentid,'assignmentid'=>$assignid, 'contextinstanceid'=>$contextinstanceid),'*' );
-    var_dump($record);
-    die();
+
+
+    if($component =="quiz"){
+        $quizid_or_assignmentid = 'quizid';
+    }
+    elseif ($component=='assignment'){
+        $quizid_or_assignmentid = 'assignmentid';
+    }
+
+    $record = $DB->get_record('local_course_reminder_email',array('courseid'=>$courseid, 'studentid'=>$studentid,$quizid_or_assignmentid=>$assignid, 'contextinstanceid'=>$contextinstanceid),'*' );
+
+
 
 
     $object = new \stdClass();
