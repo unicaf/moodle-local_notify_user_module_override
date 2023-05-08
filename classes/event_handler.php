@@ -24,6 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 require __DIR__.'/emails.php';
 //require_once($CFG->dirroot ."/config.php");
 require __DIR__.'/checkStatus.php';
+require_once($CFG->dirroot.'/group/lib.php');
 
 
 
@@ -155,8 +156,10 @@ function updateData($event){
         $assignid = $event_data['other']["assignid"];
     }
     $record = getAssignOverride($userid,$assignid,$component);
-    var_dump($record);
 
+//    get_group($courseid,$userid);
+//
+//    die();
 
 
 
@@ -176,7 +179,7 @@ function updateData($event){
 //    var_dump($record);
 //    die();
     updateReminderEmailTable($courseid,$userid,$assignid,$newCutOffDate,$newDueDate,$contextinstanceid,$component);
-//TODO FIX QUIZ UPDATE
+
 }
 
 function deleteData($event){
@@ -303,11 +306,20 @@ function get_assignment_url($contextinstanceid, $component){
 }
 
 
-//function get_group(){
-//    global $DB;
-//
-//
-//}
+function get_group($courseid,$userid){
+    $group = groups_get_user_groups($courseid,$userid);
+    $groups = [];
+    $group_keys = array_keys($group);
+    for($i=0; $i<count($group); $i++){
+        foreach($group[$group_keys[$i]] as $key =>$value){
+            array_push($groups,$value);
+        }
+    }
+  foreach ($groups as $group){
+      $editingTeacher = groups_get_members_by_role($group,$courseid);
+  }
+
+}
 
 
 //function get_teacher(){
