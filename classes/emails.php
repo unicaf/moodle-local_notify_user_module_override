@@ -32,8 +32,6 @@ function send_email_by_cron()
     $get_record_for_cron = $DB->get_records($table, ["emailtosent" => "1", "emailsent" => "0"], '', "*");
     $keys = array_keys($get_record_for_cron);
 
-    $idsArr = [];
-    $courseIdArr = [];
 
     $object = new stdClass();
         for($i=0; $i<count($get_record_for_cron); $i++){
@@ -87,7 +85,9 @@ function email_Student($studentObj,$typeOfUser){
     $emailFrom = core_user::get_noreply_user();
     // Email of the student
     $student = $studentObj->studentid;
+    //User object
     $emailofStudent = \core_user::get_user($student);
+
     $studentFirstName = $emailofStudent->firstname;
     $component = $studentObj->component;
     if ($component == 'quiz') {
@@ -98,15 +98,7 @@ function email_Student($studentObj,$typeOfUser){
     $assignmentName = $assignmentName->name;
 
     $courseid = $studentObj->courseid;
-//    var_dump($studentObj);
-
-
-//    testing for user object
-
-    $student_id_number = getIDNumberStudent($student);
-    $student_id_number = $student_id_number->idnumber;
-
-
+    $student_id_number= $emailofStudent->idnumber;
     $courseFullName = getCourseName($courseid)->fullname;
     $courseShortName = getCourseName($courseid)->shortname;
 
@@ -191,9 +183,4 @@ function getCourseName($courseid){
     global $DB;
     $name = $DB->get_record('course', array('id'=>$courseid),'fullname,shortname');
     return $name;
-}
-
-function getIDNumberStudent($studentid){
-    global $DB;
-    return $DB->get_record('user',array('id'=>$studentid),'idnumber');
 }
