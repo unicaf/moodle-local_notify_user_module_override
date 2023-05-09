@@ -126,10 +126,6 @@ function getData($event)
 
     }
 
-//    send_email_by_cron();
-//    die();
-//    getAssignmentName($assignId);
-//    overrideAssignEmailStudent($emailofUser, $courseID,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url);
 
 }
 
@@ -147,6 +143,8 @@ function updateData($event){
     $contextinstanceid = $event_data["contextinstanceid"];
 
 
+
+
     if($component == "mod_quiz"){
         $component = "quiz";
         $assignid = $event_data['other']['quizid'];
@@ -156,12 +154,6 @@ function updateData($event){
         $assignid = $event_data['other']["assignid"];
     }
     $record = getAssignOverride($userid,$assignid,$component);
-
-//    get_group($courseid,$userid);
-//
-//    die();
-
-
 
     if($component == 'quiz'){
         $newDueDate = $record->timeclose;
@@ -175,11 +167,19 @@ function updateData($event){
 
 
 
-
-//    var_dump($record);
-//    die();
     updateReminderEmailTable($courseid,$userid,$assignid,$newCutOffDate,$newDueDate,$contextinstanceid,$component);
 
+}
+
+function get_original_date($assignid,$component){
+    global $DB;
+    if($component === "quiz"){
+        $table = 'quiz';
+        return $DB->get_record($table,array('id'=>$assignid),'timeclose');
+    }elseif($component === 'assignment'){
+        $table = "assign";
+        return $DB->get_record($table,array('id'=>$assignid),'duedate');
+    }
 }
 
 function deleteData($event){
@@ -244,7 +244,15 @@ function updateReminderEmailTable($courseid, $studentid, $assignid,$newCutOffDat
     }
 
     $record = $DB->get_record('local_course_reminder_email',array('courseid'=>$courseid, 'studentid'=>$studentid,$quizid_or_assignmentid=>$assignid, 'contextinstanceid'=>$contextinstanceid),'*' );
-
+//    if(!$record){
+//        var_dump(get_original_date($assignid,$component));
+//        if($component === 'assignment'){
+//            get
+//        }
+//        die();
+//
+////        insert_course_reminder_email_table($courseid,$studentid,$assignid,$component,,$newDueDate,$contextinstanceid);
+//    }
 
 
 
@@ -296,6 +304,26 @@ function getAssignmentOverrideDate($id, $table, $relatedStudent,$component){
 
 }
 
+function insert_course_reminder_email_table($courseid,$studentid,$quiz_or_assignment_ID,$component,$assignmentdate,$assignmentoverridedate,$contextinstanceid){
+    global $DB;
+    $table = 'local_course_reminder_email';
+    $record = new \stdClass();
+    $record->courseid = $courseid;
+    $record->studentid = $studentid;
+    $record->component = $component;
+    $record->assignmentdate =$assignmentdate;
+    $record->assignmentoverridedate =$assignmentoverridedate;
+    $record->contextinstanceid = $contextinstanceid;
+    if($component === 'quiz' || $component ==="mod_quiz"){
+        $record->quizid = $quiz_or_assignment_ID;
+    }else{
+        $record->assignmentid = $quiz_or_assignment_ID;
+    }
+    return $DB->insert_record($table,$record);
+
+
+}
+
 //Creates URL link for assignment
 function get_assignment_url($contextinstanceid, $component){
     if($component == "mod_assign") {
@@ -322,25 +350,9 @@ function get_group($courseid,$userid){
 }
 
 
-//function get_teacher(){
-//    global $DB, $COURSE;
-//    $teacher = $DB->get_field("role","id", array("archetype" => "editingteacher"));
-//    $courseID = $COURSE->id;
-//    $groupid = $DB->get_field("groups","id",array("courseid"=>$courseID));
-//    print_r("Group ID is ".$groupid);
-//
-//    $sql = "SELECT courseid, name FROM mdl_groups INNER JOIN mdl_course ON mdl_groups.courseid = mdl_course.id; ";
-//    $run_sql = $DB->get_records_sql($sql);
-//    var_dump($run_sql);
-//
-
-//    return $teacher;
 
 
-//}
 
-
-//TODO Enable and disable through course settings whole functionality
 
 
 class event_handler
