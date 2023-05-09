@@ -48,20 +48,15 @@ function send_email_by_cron()
 
 }
 
-function email_teacher($courseid,$studentObj){
-    global $DB,$USER;
-    //Gets ID for 'editing tutor'
-    $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
-    $context = context_course::instance($courseid);
-    //Gets all editing tutor(tutor) from the course
-    $teachers = get_role_users($role->id,$context);
-
-
-
-
-
-
-}
+//function email_teacher($courseid,$studentObj){
+//    global $DB,$USER;
+//    //Gets ID for 'editing tutor'
+//    $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
+//    $context = context_course::instance($courseid);
+//    //Gets all editing tutor(tutor) from the course
+//    $teachers = get_role_users($role->id,$context);
+//
+//}
 
 
 
@@ -95,11 +90,23 @@ function email_Student($studentObj,$typeOfUser){
     $emailofStudent = \core_user::get_user($student);
     $studentFirstName = $emailofStudent->firstname;
     $component = $studentObj->component;
+    if ($component == 'quiz') {
+        $assignmentID = $studentObj->quizid;
+    }
 
     $assignmentName = getAssignmentName($assignmentID, $component);
     $assignmentName = $assignmentName->name;
 
     $courseid = $studentObj->courseid;
+//    var_dump($studentObj);
+
+
+//    testing for user object
+
+    $student_id_number = getIDNumberStudent($student);
+    $student_id_number = $student_id_number->idnumber;
+
+
     $courseFullName = getCourseName($courseid)->fullname;
     $courseShortName = getCourseName($courseid)->shortname;
 
@@ -108,27 +115,17 @@ function email_Student($studentObj,$typeOfUser){
     $assignmentOverrideDate = $studentObj->assignmentoverridedate;
     $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
     if($typeOfUser === 'student') {
-//        print_r($studentObj);
-        // Send email to user
-
-
-        //Creates the url for moodle
-//    $assignment_url = html_writer::link($assignment_url,$assignmentName);
-
         //Email of Unicaf extenuating Circumstances
         $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
-        //Email no-reply
+
 
         $contextinstanceid = $studentObj->contextinstanceid;
 
-        if ($component == 'quiz') {
-            $assignmentID = $studentObj->quizid;
-        }
+
         $assignment_url = get_assignment_url($contextinstanceid, $component);
         $assignment_url = html_writer::link($assignment_url, $assignmentName);
 
-//    $emailofStudent = $emailofStudent->email;
-        echo nl2br("Email is being sent to user with ID " . $emailofStudent->id . "\n");
+        echo nl2br("Email is being sent to student with ID " . $emailofStudent->id . "\n");
 
         //Subject of email
         $subject = "Your course " . $courseFullName . " has some changes in " . $component . " has changed dates";
@@ -148,12 +145,16 @@ function email_Student($studentObj,$typeOfUser){
         //Gets all editing tutor(tutor) from the course
         $teachers = get_role_users($role->id,$context);
 //    print_r($teachers);
-        $subject = "Student Extension for course " . $courseFullName . " for student " . $studentFirstName .  " has been granted";
-        $message = "Extension has been granted for student " .$studentFirstName ."for course code " .$courseShortName . "and course name  " . $courseFullName .
-            "\n\n The extension is given until " . $assignmentOverrideDate . " for " . $component ." " .$assignmentName;
+        $subject = "Student Extension for course " . $courseShortName . " for student " . $studentFirstName .  " has been granted";
+
 
         foreach ($teachers as $teacher){
+            echo nl2br("Email is being sent to teacher with ID " . $teacher->id . "\n");
+            $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName ." have been changed as follows and require your attention \n\n 
+         Below you can find the details for your associated actions \n\n" .$studentFirstName ." ".$student_id_number ." ".$assignmentDate ."  ".$assignmentOverrideDate;
+
             email_to_user($teacher, $emailFrom, $subject, $message, nl2br($message), "", "", "");
+
         }
 
 
@@ -179,16 +180,20 @@ function getAssignmentName($id,$component){
     */
     global $DB;
     if($component == "assignment") {
-        $assignmentName = $DB->get_record("assign", array('id' => $id), 'name');
+        return $assignmentName = $DB->get_record("assign", array('id' => $id), 'name');
     }elseif ($component == "quiz"){
-        $assignmentName = $DB->get_record('quiz', array('id' => $id), 'name');
+         return $assignmentName = $DB->get_record('quiz', array('id' => $id), 'name');
     }
-//    var_dump($assignmentName);
-    return $assignmentName;
+
 }
 
 function getCourseName($courseid){
     global $DB;
     $name = $DB->get_record('course', array('id'=>$courseid),'fullname,shortname');
     return $name;
+}
+
+function getIDNumberStudent($studentid){
+    global $DB;
+    return $DB->get_record('user',array('id'=>$studentid),'idnumber');
 }
