@@ -22,31 +22,6 @@
 
 require_once($CFG->dirroot.'/group/lib.php');
 
-//function overrideAssignEmailStudent($emailofUser, $courseid,$courseName, $component, $assignmentName,$assignmentDate,$assignmentOverrideDate,$assignment_url){
-//    // Send email to user
-//    $assignmentName = $assignmentName->name;
-//    //Creates the url for moodle
-//    $assignment_url = html_writer::link($assignment_url,$assignmentName);
-//
-//    //Email of Unicaf extenuating Circumstances
-//    $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org","extenuating.circumstances@unicaf.org");
-//    //Email no-reply
-//    $emailFrom =core_user::get_noreply_user();
-//    // Email of the student
-//    $emailToUser = $emailofUser;
-//    //Subject of email
-//    $subject = "Your course " .$courseName ." has some changes in ".$component .  " has changed dates";
-//    //Message of email
-//    $message = "Dear ".$emailofUser->firstname . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " .$component ." ".$assignment_url  ."
-//    has been aprroved .\n\n The assessment deadline for ". $assignment_url ." has been changed from ".$assignmentDate . " to  <strong> ".$assignmentOverrideDate ." </strong>. \n\n"
-//    ."In case you have already submitted " .$component ." ".$assignment_url ." prior or on " . $assignmentOverrideDate .", then rest assured that your assignment will be sent for marking .\n\n
-//     In case you are yet to submit " .$component ." " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
-//     "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on ".$extenuatingCircumstances;
-//    // Function to send email
-//    email_to_user($emailToUser,$emailFrom,$subject,$message,nl2br($message),"","","");
-//
-//
-//}
 
 
 
@@ -65,21 +40,26 @@ function send_email_by_cron()
         foreach($get_record_for_cron[$keys[$i]] as $key => $value){
             $object->$key = $value;
             }
-        email_Student($object);
-        email_teacher($object->courseid,$object->studentid);
+        email_Student($object,"student");
+        email_Student($object,"teacher");
+
 
         }
 
 }
 
-function email_teacher($courseid,$userid){
-    global $DB;
+function email_teacher($courseid,$studentObj){
+    global $DB,$USER;
     //Gets ID for 'editing tutor'
     $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
     $context = context_course::instance($courseid);
     //Gets all editing tutor(tutor) from the course
     $teachers = get_role_users($role->id,$context);
-    print_r($teachers);
+
+
+
+
+
 
 }
 
@@ -106,61 +86,79 @@ function sent_email_time(){
     return time();
 }
 
-function email_Student($studentObj){
-    global $USER;
-//        print_r($studentObj);
-    // Send email to user
+function email_Student($studentObj,$typeOfUser){
+    global $USER,$DB;
     $assignmentID = $studentObj->assignmentid;
-
-    //Creates the url for moodle
-//    $assignment_url = html_writer::link($assignment_url,$assignmentName);
-
-    //Email of Unicaf extenuating Circumstances
-    $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org","extenuating.circumstances@unicaf.org");
-    //Email no-reply
-    $emailFrom =core_user::get_noreply_user();
+    $emailFrom = core_user::get_noreply_user();
     // Email of the student
     $student = $studentObj->studentid;
-    $emailofStudent= \core_user::get_user($student);
+    $emailofStudent = \core_user::get_user($student);
     $studentFirstName = $emailofStudent->firstname;
     $component = $studentObj->component;
-    $contextinstanceid = $studentObj->contextinstanceid;
 
-    if($component == 'quiz'){
-        $assignmentID = $studentObj->quizid;
-    }
-
-
-
-    $assignmentName = getAssignmentName($assignmentID,$component);
+    $assignmentName = getAssignmentName($assignmentID, $component);
     $assignmentName = $assignmentName->name;
-    $assignment_url = get_assignment_url($contextinstanceid, $component);
-    $assignment_url = html_writer::link($assignment_url,$assignmentName);
+
     $courseid = $studentObj->courseid;
     $courseFullName = getCourseName($courseid)->fullname;
     $courseShortName = getCourseName($courseid)->shortname;
-
-
 
     $assignmentDate = $studentObj->assignmentdate;
     $assignmentDate = date('d-M-Y H:i', $assignmentDate);
     $assignmentOverrideDate = $studentObj->assignmentoverridedate;
     $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
+    if($typeOfUser === 'student') {
+//        print_r($studentObj);
+        // Send email to user
+
+
+        //Creates the url for moodle
+//    $assignment_url = html_writer::link($assignment_url,$assignmentName);
+
+        //Email of Unicaf extenuating Circumstances
+        $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
+        //Email no-reply
+
+        $contextinstanceid = $studentObj->contextinstanceid;
+
+        if ($component == 'quiz') {
+            $assignmentID = $studentObj->quizid;
+        }
+        $assignment_url = get_assignment_url($contextinstanceid, $component);
+        $assignment_url = html_writer::link($assignment_url, $assignmentName);
 
 //    $emailofStudent = $emailofStudent->email;
-    echo nl2br("Email is being sent to user with ID " .$emailofStudent->id ."\n");
+        echo nl2br("Email is being sent to user with ID " . $emailofStudent->id . "\n");
 
-    //Subject of email
-    $subject = "Your course " .$courseFullName ." has some changes in ".$component .  " has changed dates";
-    //Message of email
-    $message = "Dear ".$studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  "  .$courseShortName ." " .$courseFullName.  "
-        has been aprroved .\n\n The assessment deadline for ". $assignment_url ." has been changed from ".$assignmentDate . " to  <strong> ".$assignmentOverrideDate ." </strong>. \n\n"
-        ."In case you have already submitted " .$component ." ".$assignment_url ." prior or on " . $assignmentOverrideDate .", then rest assured that your assignment will be sent for marking .\n\n
-        In case you are yet to submit " .$component ." " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
-        "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on ".$extenuatingCircumstances;
-    // Function to send email
-    email_to_user($emailofStudent,$emailFrom,$subject,$message,nl2br($message),"","","");
-    email_sent("local_course_reminder_email",$studentObj->id);
+        //Subject of email
+        $subject = "Your course " . $courseFullName . " has some changes in " . $component . " has changed dates";
+        //Message of email
+        $message = "Dear " . $studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " . $courseShortName . " " . $courseFullName . "
+        has been aprroved .\n\n The assessment deadline for " . $assignment_url . " has been changed from " . $assignmentDate . " to  <strong> " . $assignmentOverrideDate . " </strong>. \n\n"
+            . "In case you have already submitted " . $component . " " . $assignment_url . " prior or on " . $assignmentOverrideDate . ", then rest assured that your assignment will be sent for marking .\n\n
+        In case you are yet to submit " . $component . " " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
+            "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on " . $extenuatingCircumstances;
+        // Function to send email
+        email_to_user($emailofStudent, $emailFrom, $subject, $message, nl2br($message), "", "", "");
+        email_sent("local_course_reminder_email", $studentObj->id);
+    }elseif($typeOfUser==="teacher"){
+        //Gets ID for 'editing tutor'
+        $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
+        $context = context_course::instance($courseid);
+        //Gets all editing tutor(tutor) from the course
+        $teachers = get_role_users($role->id,$context);
+//    print_r($teachers);
+        $subject = "Student Extension for course " . $courseFullName . " for student " . $studentFirstName .  " has been granted";
+        $message = "Extension has been granted for student " .$studentFirstName ."for course code " .$courseShortName . "and course name  " . $courseFullName .
+            "\n\n The extension is given until " . $assignmentOverrideDate . " for " . $component ." " .$assignmentName;
+
+        foreach ($teachers as $teacher){
+            email_to_user($teacher, $emailFrom, $subject, $message, nl2br($message), "", "", "");
+        }
+
+
+
+    }
 
 
 
