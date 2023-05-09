@@ -67,56 +67,21 @@ function send_email_by_cron()
             }
         email_Student($object);
         email_teacher($object->courseid,$object->studentid);
-//        var_dump($object);
-//        die();
+
         }
 
 }
 
 function email_teacher($courseid,$userid){
     global $DB;
+    //Gets ID for 'editing tutor'
     $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
     $context = context_course::instance($courseid);
+    //Gets all editing tutor(tutor) from the course
     $teachers = get_role_users($role->id,$context);
     print_r($teachers);
 
 }
-//{
-//    $group = groups_get_user_groups($courseid, $userid);
-//    $group_keys = array_keys($group);
-//
-//
-//    $groups = [];
-//    $group_keys = array_keys($group);
-//    for ($i = 0; $i < count($group); $i++) {
-//        foreach ($group[$group_keys[$i]] as $key => $value) {
-//            array_push($groups, $value);
-//        }
-//    }
-//    foreach ($groups as $group) {
-//        $editingTeacher = groups_get_members_by_role($group, $courseid);
-//
-//    }
-//
-//    foreach ($editingTeacher[3] as $teachers) {
-//        foreach ((array)$teachers as $teacher) {
-//            $teacherClass = new stdClass();
-//            $teacherClass->id = $teacher->id;
-//            $teacherClass->email = $teacher->email;
-//            $teacherClass->username = $teacher->username;
-//
-//
-//            echo nl2br("Email is being sent to Teacher with ID " . $teacherClass->id . "\n");
-//            $emailFrom = core_user::get_noreply_user();
-//            $subject = "This is to be sent to teacher";
-//            $message = "This is the message to be sent to the Teachers";
-//            email_to_user($teacherClass, $emailFrom, $subject, $message, nl2br($message), "", "", "");
-//
-//
-//        }
-//
-//    }
-//}
 
 
 
