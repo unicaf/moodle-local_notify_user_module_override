@@ -110,8 +110,12 @@ function email_Student($studentObj,$typeOfUser){
     $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
 
     $student_group = get_student_group($courseid,$student);
-    $student_group = $student_group->name;
-    var_dump($student_group);
+    if($student_group == NULL){
+       $student_group= " ";
+    }else{
+        $student_group = $student_group->name;
+    }
+
 
 
     if($typeOfUser === 'student') {
