@@ -28,6 +28,11 @@ require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot . '/local/course_reminder/classes/form/coursesettingsform.php');
 global $DB, $COURSE,$PAGE;
 
+//This is only accesible to users who are able to edit the course settings
+if (!has_capability('moodle/course:update', context_course::instance($PAGE->course->id))) {
+    return;
+}
+
 $courseid = required_param("id",PARAM_INT);
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
