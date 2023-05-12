@@ -120,7 +120,7 @@ function email_Student($studentObj,$typeOfUser){
 
     if($typeOfUser === 'student') {
         //Email of Unicaf extenuating Circumstances
-        $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
+        $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
 
 
         $contextinstanceid = $studentObj->contextinstanceid;
