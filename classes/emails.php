@@ -25,6 +25,7 @@ require_once($CFG->dirroot.'/group/lib.php');
 
 
 
+
 function send_email_by_cron()
 {
     global $DB;
@@ -37,6 +38,7 @@ function send_email_by_cron()
         for($i=0; $i<count($get_record_for_cron); $i++){
         foreach($get_record_for_cron[$keys[$i]] as $key => $value){
             $object->$key = $value;
+
             }
         email_Student($object,"student");
         email_Student($object,"teacher");
@@ -106,6 +108,12 @@ function email_Student($studentObj,$typeOfUser){
     $assignmentDate = date('d-M-Y H:i', $assignmentDate);
     $assignmentOverrideDate = $studentObj->assignmentoverridedate;
     $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
+
+    $student_group = get_student_group($courseid,$student);
+    $student_group = $student_group->name;
+    var_dump($student_group);
+
+
     if($typeOfUser === 'student') {
         //Email of Unicaf extenuating Circumstances
         $extenuatingCircumstances = html_writer::link("extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
@@ -122,8 +130,8 @@ function email_Student($studentObj,$typeOfUser){
         //Subject of email
         $subject = "Your course " . $courseFullName . " has some changes in " . $component . " has changed dates";
         //Message of email
-        $message = "Dear " . $studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " . $courseShortName . " " . $courseFullName . "
-        has been aprroved .\n\n The assessment deadline for " . $assignment_url . " has been changed from " . $assignmentDate . " to  <strong> " . $assignmentOverrideDate . " </strong>. \n\n"
+        $message = "Dear " . $studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " . $courseShortName . " " . $courseFullName . " " .$student_group ."
+        has been approved .\n\n The assessment deadline for " . $assignment_url . " has been changed from " . $assignmentDate . " to  <strong> " . $assignmentOverrideDate . " </strong>. \n\n"
             . "In case you have already submitted " . $component . " " . $assignment_url . " prior or on " . $assignmentOverrideDate . ", then rest assured that your assignment will be sent for marking .\n\n
         In case you are yet to submit " . $component . " " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
             "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on " . $extenuatingCircumstances;
@@ -142,7 +150,7 @@ function email_Student($studentObj,$typeOfUser){
 
         foreach ($teachers as $teacher){
             echo nl2br("Email is being sent to teacher with ID " . $teacher->id . "\n");
-            $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName ." have been changed as follows and require your attention \n\n 
+            $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName .  " ". $student_group . " have been changed as follows and require your attention \n\n 
          Below you can find the details for your associated actions \n\n" .$studentFirstName ." ".$student_id_number ." ".$assignmentDate ."  ".$assignmentOverrideDate;
 
             email_to_user($teacher, $emailFrom, $subject, $message, nl2br($message), "", "", "");
@@ -183,4 +191,23 @@ function getCourseName($courseid){
     global $DB;
     $name = $DB->get_record('course', array('id'=>$courseid),'fullname,shortname');
     return $name;
+}
+
+
+function get_student_group($courseid,$userid){
+    $table="groups";
+    global $DB;
+      $group = groups_get_user_groups($courseid,$userid);
+    $groups = [];
+    $group_keys = array_keys($group);
+    for($i=0; $i<count($group); $i++){
+        foreach($group[$group_keys[$i]] as $key =>$value){
+            array_push($groups,$value);
+        }
+    }
+  foreach ($groups as $group){
+      return $DB->get_record($table,array("id"=>$group),"name");
+
+  }
+
 }

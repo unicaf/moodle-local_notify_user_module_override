@@ -337,18 +337,19 @@ function get_assignment_url($contextinstanceid, $component){
 }
 
 
-function get_group($courseid,$userid){
+function get_student_group($courseid,$userid){
     $group = groups_get_user_groups($courseid,$userid);
-    $groups = [];
-    $group_keys = array_keys($group);
-    for($i=0; $i<count($group); $i++){
-        foreach($group[$group_keys[$i]] as $key =>$value){
-            array_push($groups,$value);
-        }
-    }
-  foreach ($groups as $group){
-      $editingTeacher = groups_get_members_by_role($group,$courseid);
-  }
+
+//    $groups = [];
+//    $group_keys = array_keys($group);
+//    for($i=0; $i<count($group); $i++){
+//        foreach($group[$group_keys[$i]] as $key =>$value){
+//            array_push($groups,$value);
+//        }
+//    }
+//  foreach ($groups as $group){
+//      $editingTeacher = groups_get_members_by_role($group,$courseid);
+//  }
 
 }
 
