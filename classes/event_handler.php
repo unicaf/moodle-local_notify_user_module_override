@@ -244,15 +244,13 @@ function updateReminderEmailTable($courseid, $studentid, $assignid,$newCutOffDat
     }
 
     $record = $DB->get_record('local_course_reminder_email',array('courseid'=>$courseid, 'studentid'=>$studentid,$quizid_or_assignmentid=>$assignid, 'contextinstanceid'=>$contextinstanceid),'*' );
-//    if(!$record){
-//        var_dump(get_original_date($assignid,$component));
-//        if($component === 'assignment'){
-//            get
-//        }
-//        die();
-//
-////        insert_course_reminder_email_table($courseid,$studentid,$assignid,$component,,$newDueDate,$contextinstanceid);
-//    }
+    if(!$record){
+        //This is in place to fix errors when there is no record in our table but there is an override already set
+        $main_date = get_original_date($assignid,$component);
+        var_dump($main_date);
+        insert_course_reminder_email_table($courseid,$studentid,$assignid,$component,$main_date,$newDueDate,$contextinstanceid);
+        return;
+    }
 
 
 
@@ -260,8 +258,9 @@ function updateReminderEmailTable($courseid, $studentid, $assignid,$newCutOffDat
 
     $object->id = $record->id;
     $object->assignmentoverridedate = $newDueDate;
-    $object->emailtosent = "1";
+    $object->emailtosent = sync_to_send_email($courseid)->enable;
     $object->emailsent = "0";
+
 
     $updateObj = $DB->update_record($table,$object);
 }
@@ -314,10 +313,14 @@ function insert_course_reminder_email_table($courseid,$studentid,$quiz_or_assign
     $record->assignmentdate =$assignmentdate;
     $record->assignmentoverridedate =$assignmentoverridedate;
     $record->contextinstanceid = $contextinstanceid;
+    $record->emailtosent = sync_to_send_email($courseid)->enable;
+    $record->emailsent = '0';
     if($component === 'quiz' || $component ==="mod_quiz"){
         $record->quizid = $quiz_or_assignment_ID;
-    }else{
+        $record->assignmentdate = $assignmentdate->timeclose;
+    }elseif($component === 'assignment' || $component === 'assign'){
         $record->assignmentid = $quiz_or_assignment_ID;
+        $record->assignmentdate = $assignmentdate->duedate;
     }
     return $DB->insert_record($table,$record);
 
@@ -349,6 +352,12 @@ function get_group($courseid,$userid){
 
 }
 
+
+function sync_to_send_email($courseid){
+        global $DB;
+        return $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $courseid], 'enable');
+
+}
 
 
 
