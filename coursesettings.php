@@ -33,6 +33,7 @@ if (!has_capability('moodle/course:update', context_course::instance($PAGE->cour
     return;
 }
 
+//Displays the form
 $courseid = required_param("id",PARAM_INT);
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
@@ -44,10 +45,13 @@ $PAGE->set_title("Customize Reminder Settings");
 $PAGE->set_heading(get_string('pluginname','local_course_reminder'));
 
 $isEnabled = new checkStatusClass($courseid);
+//Ads it to database local_course_reminder if not there
 $checkifDatabase = $isEnabled->checkStatus();
 $customdata = array('id' =>$courseid);
+//mform is the from we created
 $mform = new coursesettingsform(null,$customdata);
 
+//When the form is canceled
 if ($mform->is_cancelled()){
     redirect(new moodle_url('/course/view.php',array('id'=>$courseid)));
 

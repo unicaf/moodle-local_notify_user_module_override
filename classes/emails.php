@@ -48,15 +48,6 @@ function send_email_by_cron()
 
 }
 
-//function email_teacher($courseid,$studentObj){
-//    global $DB,$USER;
-//    //Gets ID for 'editing tutor'
-//    $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
-//    $context = context_course::instance($courseid);
-//    //Gets all editing tutor(tutor) from the course
-//    $teachers = get_role_users($role->id,$context);
-//
-//}
 
 
 

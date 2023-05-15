@@ -68,6 +68,17 @@ class checkStatusClass
 
        $DB->update_record('local_course_reminder', $record1);
 
+       $get_id_local_course_reminder_email =  $DB->get_records('local_course_reminder_email',['courseid'=>$this->courseid],"","id");
+//       var_dump($get_id_local_course_reminder_email);
+       $record2 = new stdClass();
+
+       $record2->id = $get_id_local_course_reminder_email;
+       foreach ($record2->id as $record){
+//           var_dump($record->id);
+           $record2->emailtosent = $fromform->enable;
+           $record2->id = $record->id;
+           $update_local_course_reminder_email = $DB->update_record('local_course_reminder_email',$record2);
+       }
 
 
 

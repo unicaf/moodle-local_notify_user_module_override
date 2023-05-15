@@ -8,6 +8,8 @@ require_once 'classes/checkStatus.php';
 
 class coursesettingsform extends moodleform
 {
+
+    //Form Setup
     public function definition()
     {
 
@@ -24,6 +26,7 @@ class coursesettingsform extends moodleform
         $mform = $this->_form;
         $mform->addElement('select', 'enable',"Enable",$OPTIONS);
         $mform->setType('enable', PARAM_INT);
+        //By Default in Database is set to Yes (1) when a user override is created
         $mform->setDefault('enable',$value_from_database_enable->enable);
         $mform->addElement('hidden','id',$courseid);
         $mform->setType('id',PARAM_INT);
