@@ -31,6 +31,7 @@ require_once($CFG->dirroot.'/group/lib.php');
 
 use core\event\assessable_submitted;
 use core_analytics\course;
+use Matrix\Exception;
 use \mod_assign\event\user_override_created;
 function getData($event)
 {
@@ -186,23 +187,30 @@ function deleteData($event){
     global $COURSE;
     $courseObject = $COURSE;
     $event_data = $event->get_data();
-    var_dump($event_data);
-
+//    var_dump($event_data);
     $courseid = $event_data["courseid"];
     $studentid = $event_data["relateduserid"];
     $contextinstanceid = $event_data["contextinstanceid"];
-    $table_id = get_id_reminder_email_table($courseid,$studentid,$contextinstanceid);
 
+    $table_id = get_id_reminder_email_table($courseid, $studentid, $contextinstanceid);
     deleteReminderEmailTable($table_id);
 
 
-//    die();
+
+
+
+
+
 }
 //Gets ID from local_course_reminder_email
 function get_id_reminder_email_table($courseid,$studentid,$contextinstanceid){
     global $DB;
     $table = "local_course_reminder_email";
     $get_id = $DB->get_record($table,["courseid" => $courseid, "studentid"=>$studentid, "contextinstanceid"=>$contextinstanceid],"id");
+    //If there is no ID in table due of reset or upgrade return to not show error.
+    if(!$get_id){
+    return;
+    }
     return $get_id->id;
 }
 //Deletes record in local_course_reminder_email

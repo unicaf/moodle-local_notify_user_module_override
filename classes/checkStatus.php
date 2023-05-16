@@ -12,6 +12,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+
+//TODO on the deletion find the same id, also check more for set enable
 /**
  * Version info
  *
