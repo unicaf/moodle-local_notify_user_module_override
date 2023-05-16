@@ -173,6 +173,7 @@ function updateData($event){
 }
 
 function get_original_date($assignid,$component){
+    //Gets original date of assignment/quiz
     global $DB;
     if($component === "quiz"){
         $table = 'quiz';
