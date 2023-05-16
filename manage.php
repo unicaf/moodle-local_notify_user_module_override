@@ -20,6 +20,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Version info
+ *
+ * @package    local_course_reminder
+ * @copyright  2023 UNICAF LTD <info@unicaf.org>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require_once(__DIR__ . '/../../config.php');
 //require_once($CFG->dirroot.'/blocks/course_overview/locallib.php');
 

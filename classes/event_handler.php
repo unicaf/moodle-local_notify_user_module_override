@@ -365,7 +365,17 @@ function get_student_group($courseid,$userid){
 
 function sync_to_send_email($courseid){
         global $DB;
-        return $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $courseid], 'enable');
+        $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $courseid], 'enable');
+        //checks if record is in table local_course_reminder if not it adds it
+        if(!$is_enabled){
+            $test = new \checkStatusClass($courseid);
+            $test->checkStatus();
+            return $is_enabled;
+        }
+        return $is_enabled;
+
+
+
 
 }
 
