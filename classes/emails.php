@@ -85,6 +85,7 @@ function email_Student($studentObj,$typeOfUser){
     $emailofStudent = \core_user::get_user($student);
 
     $studentFirstName = $emailofStudent->firstname;
+    $studentLastName = $emailofStudent->lastname;
     $component = $studentObj->component;
     if ($component == 'quiz') {
         $assignmentID = $studentObj->quizid;
@@ -138,7 +139,7 @@ function email_Student($studentObj,$typeOfUser){
         $message = "Dear " . $studentFirstName . "\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  " . $courseShortName . " " . $courseFullName . " " .$student_group ."
         has been approved .\n\n The assessment deadline for " . $assignment_url . " has been changed from " . $assignmentDate . " to  <strong> " . $assignmentOverrideDate . " </strong>. \n\n"
             . "In case you have already submitted " . $component . " " . $assignment_url . " prior or on " . $assignmentOverrideDate . ", then rest assured that your assignment will be sent for marking .\n\n
-        In case you are yet to submit " . $component . " " . "$assignment_url" . ", please do so prior to the new extended deadline " . $assignmentOverrideDate .
+        In case you are yet to submit " . $component . " " . "$assignment_url" . ", please do so no later than by the new extended deadline " . $assignmentOverrideDate .
             "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on " . $extenuatingCircumstances;
         // Function to send email
         email_to_user($emailofStudent, $emailFrom, $subject, $message, nl2br($message), "", "", "");
@@ -158,8 +159,9 @@ function email_Student($studentObj,$typeOfUser){
         //Emails each Teacher
         foreach ($teachers as $teacher){
             echo nl2br("Email is being sent to teacher with ID " . $teacher->id . "\n");
-            $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName .  " ". $student_group . " have been changed as follows and require your attention \n\n 
-         Below you can find the details for your associated actions \n\n" .$studentFirstName ." ".$student_id_number ." ".$assignmentDate ."  ".$assignmentOverrideDate;
+            $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName .  " ". $student_group . " have been changed as follows and require your attention \n 
+         Below you can find the details for your associated actions \n\n" . "Student's name: " .$studentFirstName ." "  .$studentLastName ." \n" ."UniSIS ID number: "  .$student_id_number ."\n " . " Assessment name :".$assignmentName . "\n Previous assessment deadline: ".$assignmentDate ." \n  New assessment deadline: ".$assignmentOverrideDate;
+
             //SEND EMAIL
             email_to_user($teacher, $emailFrom, $subject, $message, nl2br($message), "", "", "");
 
