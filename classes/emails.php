@@ -86,17 +86,20 @@ function email_Student($studentObj,$typeOfUser){
     if ($component == 'quiz') {
         $assignmentID = $studentObj->quizid;
     }
-
+    //Assignment Name
     $assignmentName = getAssignmentName($assignmentID, $component);
     $assignmentName = $assignmentName->name;
-
+    //Course ID
     $courseid = $studentObj->courseid;
     $student_id_number= $emailofStudent->idnumber;
     $courseFullName = getCourseName($courseid)->fullname;
+    //Shortname is also know as offer
     $courseShortName = getCourseName($courseid)->shortname;
 
     $assignmentDate = $studentObj->assignmentdate;
+    //Transform the date (original date of assignment)
     $assignmentDate = date('d-M-Y H:i', $assignmentDate);
+    // Date of the extension set
     $assignmentOverrideDate = $studentObj->assignmentoverridedate;
     $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
 
