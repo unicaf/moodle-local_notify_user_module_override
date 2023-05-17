@@ -160,7 +160,8 @@ function email_Student($studentObj,$typeOfUser){
         foreach ($teachers as $teacher){
             echo nl2br("Email is being sent to teacher with ID " . $teacher->id . "\n");
             $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName .  " ". $student_group . " have been changed as follows and require your attention \n 
-         Below you can find the details for your associated actions \n\n" . "Student's name: " .$studentFirstName ." "  .$studentLastName ." \n" ."UniSIS ID number: "  .$student_id_number ."\n " . " Assessment name :".$assignmentName . "\n Previous assessment deadline: ".$assignmentDate ." \n  New assessment deadline: ".$assignmentOverrideDate;
+         Below you can find the details for your associated actions \n\n" . "Student's name: " .$studentFirstName ." "  .$studentLastName ." \n" ."UniSIS ID number: "  .$student_id_number ."\n " . " Assessment name :".$assignmentName . "\n Previous assessment deadline: ".$assignmentDate ." \n  New assessment deadline: ".$assignmentOverrideDate . "\n\n In case the student submits or already submitted their work within the new assessment deadline, please bear in mind that this work should proceed through the marking process.";
+
 
             //SEND EMAIL
             email_to_user($teacher, $emailFrom, $subject, $message, nl2br($message), "", "", "");
