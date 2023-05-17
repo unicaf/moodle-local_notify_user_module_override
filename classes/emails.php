@@ -40,7 +40,9 @@ function send_email_by_cron()
             $object->$key = $value;
 
             }
+        //Emails the student
         email_Student($object,"student");
+        //Emails the Teacher
         email_Student($object,"teacher");
 
 
@@ -69,6 +71,7 @@ function email_sent($table, $id){
 
 }
 function sent_email_time(){
+    //Returns time
     return time();
 }
 
@@ -103,6 +106,9 @@ function email_Student($studentObj,$typeOfUser){
     $assignmentOverrideDate = $studentObj->assignmentoverridedate;
     $assignmentOverrideDate = date('d-M-Y H:i', $assignmentOverrideDate);
 
+
+
+
     $student_group = get_student_group($courseid,$student);
     if($student_group == NULL){
        $student_group= " ";
@@ -119,8 +125,9 @@ function email_Student($studentObj,$typeOfUser){
 
         $contextinstanceid = $studentObj->contextinstanceid;
 
-
+        //Assignment link
         $assignment_url = get_assignment_url($contextinstanceid, $component);
+        //Makes it as a link
         $assignment_url = html_writer::link($assignment_url, $assignmentName);
 
         echo nl2br("Email is being sent to student with ID " . $emailofStudent->id . "\n");
@@ -140,17 +147,20 @@ function email_Student($studentObj,$typeOfUser){
         //Gets ID for 'editing tutor'
         $role=$DB->get_record('role',array('shortname'=>'editingteacher'));
         $context = context_course::instance($courseid);
-        //Gets all editing tutor(tutor) from the course
-        $teachers = get_role_users($role->id,$context);
+
+        //Gets Group ID of the student
+        $group_id = groups_get_group_by_name($courseid,$student_group);
+        //Gets Teachers of the Group.
+        $teachers = get_role_users($role->id,$context,"","","","",$group_id);
 //    print_r($teachers);
         $subject = "Student Extension for course " . $courseShortName . " for student " . $studentFirstName .  " has been granted";
 
-
+        //Emails each Teacher
         foreach ($teachers as $teacher){
             echo nl2br("Email is being sent to teacher with ID " . $teacher->id . "\n");
             $message = "Dear " .$teacher->firstname . " ".$teacher->lastname .", \n\n" . "Please be informed that assessment deadlines which relate to " .$courseFullName . " " .$courseShortName .  " ". $student_group . " have been changed as follows and require your attention \n\n 
          Below you can find the details for your associated actions \n\n" .$studentFirstName ." ".$student_id_number ." ".$assignmentDate ."  ".$assignmentOverrideDate;
-
+            //SEND EMAIL
             email_to_user($teacher, $emailFrom, $subject, $message, nl2br($message), "", "", "");
 
         }
@@ -198,6 +208,7 @@ function get_student_group($courseid,$userid){
       $group = groups_get_user_groups($courseid,$userid);
     $groups = [];
     $group_keys = array_keys($group);
+
     for($i=0; $i<count($group); $i++){
         foreach($group[$group_keys[$i]] as $key =>$value){
             array_push($groups,$value);
@@ -208,4 +219,9 @@ function get_student_group($courseid,$userid){
 
   }
 
+}
+
+function get_teacher_of_student_group($courseid,$userid){
+    $get_group_student = groups_is_member('3');
+    var_dump($get_group_student);
 }
