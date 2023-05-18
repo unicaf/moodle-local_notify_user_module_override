@@ -13,7 +13,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 /**
  * Version info
  *
@@ -21,10 +20,10 @@
  * @copyright  2023 UNICAF LTD <info@unicaf.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class checkStatusClass
 {
-    function __construct($courseid){
+    function __construct($courseid)
+    {
 //        echo "This is the new Course id from constructor ($courseid)";
         $this->courseid = $courseid;
         $this->tableID = $this->get_id_table();
@@ -32,33 +31,37 @@ class checkStatusClass
 //        var_dump($this);
     }
 
-    function checkStatus(){
+    function checkStatus()
+
+    {
         global $DB;
 //        $this -> courseid = $courseid;
 
 //        $this->tableid = $this->get_id_table();
         $this->isEnabled = $this->is_enabled();
-        $recordExisits = $DB->record_exists("local_course_reminder",["courseid"=>"$this->courseid"]);
-        if ($recordExisits){
+        $recordExisits = $DB->record_exists("local_course_reminder", ["courseid" => "$this->courseid"]);
+        if ($recordExisits) {
 
-        }else{
+        } else {
             $this->add_to_table();
         }
 
 
     }
 
-    function add_to_table(){
+    function add_to_table()
+    {
         // if record is not in database its adds it
         global $DB;
         $record = new stdClass();
         $record->courseid = $this->courseid;
-        $DB->insert_record('local_course_reminder',$record,false);
+        $DB->insert_record('local_course_reminder', $record, false);
 
 
     }
 
-    function set_enable($fromform){
+    function set_enable($fromform)
+    {
 
         // Sets field enable to 0 or 1 within the coursesettings.php
         global $DB;
@@ -66,44 +69,46 @@ class checkStatusClass
         $record1 = new stdClass();
 
         $record1->enable = $fromform->enable;
-        $record1 -> id = $this->tableID->id;
+        $record1->id = $this->tableID->id;
 
-       $DB->update_record('local_course_reminder', $record1);
+        $DB->update_record('local_course_reminder', $record1);
 
-       $get_id_local_course_reminder_email =  $DB->get_records('local_course_reminder_email',['courseid'=>$this->courseid],"","id");
+        $get_id_local_course_reminder_email = $DB->get_records('local_course_reminder_email', ['courseid' => $this->courseid], "", "id");
 //       var_dump($get_id_local_course_reminder_email);
-       $record2 = new stdClass();
+        $record2 = new stdClass();
 
-       $record2->id = $get_id_local_course_reminder_email;
-       foreach ($record2->id as $record){
+        $record2->id = $get_id_local_course_reminder_email;
+        foreach ($record2->id as $record) {
 //           var_dump($record->id);
-           $record2->emailtosent = $fromform->enable;
-           $record2->id = $record->id;
-           $update_local_course_reminder_email = $DB->update_record('local_course_reminder_email',$record2);
-       }
-
+            $record2->emailtosent = $fromform->enable;
+            $record2->id = $record->id;
+            $update_local_course_reminder_email = $DB->update_record('local_course_reminder_email', $record2);
+        }
 
 
     }
 
-    function is_enabled(){
+    function is_enabled()
+    {
         //Gets enable field from database on table
         global $DB;
         $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'enable');
         return $is_enabled;
     }
 
-    function get_id_table(){
+    function get_id_table()
+    {
         //Gets id of instance for the coruseid
         global $DB;
-        $table_id = $DB->get_record('local_course_reminder',['courseid' => $this->courseid],'id');
+        $table_id = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'id');
 //        var_dump($this);
 //        var_dump($table_id);
         return $table_id;
 
     }
 
-    function who_to_send_notification($emailofUser,$courseName, $component, $assignmentName,$assignId,$assignmentDate,$assignmentOverrideDate,$assignment_url,$contextinstanceid){
+    function who_to_send_notification($emailofUser, $courseName, $component, $assignmentName, $assignId, $assignmentDate, $assignmentOverrideDate, $assignment_url, $contextinstanceid)
+    {
         $this->studentEmail = $emailofUser->email;
         $this->studentid = $emailofUser->id;
         $this->courseName = $courseName;
@@ -132,29 +137,25 @@ class checkStatusClass
         $dataObj->courseid = $this->courseid;
         $dataObj->emailtosent = $this->is_enabled()->enable;
         var_dump($dataObj->component);
-        if($dataObj->component == "quiz"){
+        if ($dataObj->component == "quiz") {
             $assignment_or_quiz = "quizid";
             $dataObj->quizid = $assignId;
-        }elseif ($dataObj->component =='assignment'){
+        } elseif ($dataObj->component == 'assignment') {
             $assignment_or_quiz = "assignmentid";
             $dataObj->assignmentid = $assignId;
         }
         //Stops duplicate entry.
-        var_dump("I am here inserting record in DB");
-        $record_exisits = $DB->record_exists($table,["courseid"=>"$dataObj->courseid", "studentid"=>"$dataObj->studentid",$assignment_or_quiz=>$assignId]);
+//        var_dump("I am here inserting record in DB");
+        $record_exisits = $DB->record_exists($table, ["courseid" => "$dataObj->courseid", "studentid" => "$dataObj->studentid", $assignment_or_quiz => $assignId]);
 
-        if(!$record_exisits){
+        if (!$record_exisits) {
             //Adds to the database
 
-            $DB->insert_record($table,$dataObj);
+            $DB->insert_record($table, $dataObj);
         }
 
 
     }
-
-
-
-
 
 
 }

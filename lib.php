@@ -19,7 +19,9 @@
  * @copyright  2023 UNICAF LTD <info@unicaf.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function local_course_reminder_extend_settings_navigation($settingsnav, $context) {
+function local_course_reminder_extend_settings_navigation($settingsnav, $context)
+{
+    //ADDS IT IN THE GEAR ICON ON EDIT MODE
     global $PAGE;
 
     // Only add this settings item on non-site course pages.

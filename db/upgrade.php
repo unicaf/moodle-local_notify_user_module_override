@@ -20,7 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_local_course_reminder_upgrade($oldversion) {
+function xmldb_local_course_reminder_upgrade($oldversion)
+{
     global $CFG, $DB;
     $dbman = $DB->get_manager();
 
@@ -79,7 +80,6 @@ function xmldb_local_course_reminder_upgrade($oldversion) {
     return $result;
 
 }
-
 
 
 ?>

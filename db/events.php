@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 $observers = [
     [    //Assingment User override created
         'eventname' => '\mod_assign\event\user_override_created',
-        'callback' =>   '\local_course_reminder\event_handler::assign_user_override_created',
+        'callback' => '\local_course_reminder\event_handler::assign_user_override_created',
     ],
     [  //Assignment User  override Updated
         'eventname' => '\mod_assign\event\user_override_updated',
