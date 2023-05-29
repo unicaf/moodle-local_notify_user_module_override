@@ -22,7 +22,10 @@
 
 namespace local_course_reminder;
 defined('MOODLE_INTERNAL') || die();
-require __DIR__.'/emails.php';
+
+//require __DIR__.'/emails.php';
+
+include_once($CFG->dirroot."/local/course_reminder/classes/emails.php");
 //require_once($CFG->dirroot ."/config.php");
 require __DIR__.'/checkStatus.php';
 require_once($CFG->dirroot.'/group/lib.php');
@@ -391,6 +394,13 @@ function sync_to_send_email($courseid)
 }
 
 
+function copy_course($event){
+    var_dump("the object ID is");
+  var_dump($event->objectid);
+
+  $origin_backup_course_id = $event->objectid;
+}
+
 class event_handler
 {
 
@@ -432,6 +442,11 @@ class event_handler
         //QUIZ DELETE AN OVERRIDE
 
         return deleteData($event);
+    }
+
+    public static function copy_course(\core\event\course_backup_created $event)
+    {
+        return copy_course($event);
     }
 
 
