@@ -395,8 +395,6 @@ function sync_to_send_email($courseid)
 
 
 function copy_course($event){
-    var_dump("the object ID is");
-  var_dump($event->objectid);
 
   $origin_backup_course_id = $event->objectid;
 }
