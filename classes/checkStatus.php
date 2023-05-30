@@ -35,16 +35,10 @@ class checkStatusClass
 
     {
         global $DB;
-//        $this -> courseid = $courseid;
 
-//        $this->tableid = $this->get_id_table();
         $this->isEnabled = $this->is_enabled();
-        $recordExisits = $DB->record_exists("local_course_reminder", ["courseid" => "$this->courseid"]);
-        if ($recordExisits) {
+        return $recordExisits = $DB->record_exists("local_course_reminder", ["courseid" => "$this->courseid"]);
 
-        } else {
-            $this->add_to_table();
-        }
 
 
     }
@@ -70,6 +64,12 @@ class checkStatusClass
 
         $record1->enable = $fromform->enable;
         $record1->id = $this->tableID->id;
+        if(!$record1->id){
+            $record1->courseid = $this->courseid;
+            $DB->insert_record('local_course_reminder', $record1, false);
+        }
+
+
 
         $DB->update_record('local_course_reminder', $record1);
 
@@ -93,7 +93,12 @@ class checkStatusClass
         //Gets enable field from database on table
         global $DB;
         $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'enable');
-        return $is_enabled;
+
+        if(!$is_enabled){
+            return;
+        }
+        return $is_enabled->enable;
+
     }
 
     function get_id_table()
@@ -101,8 +106,10 @@ class checkStatusClass
         //Gets id of instance for the coruseid
         global $DB;
         $table_id = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'id');
-//        var_dump($this);
-//        var_dump($table_id);
+        if(!$table_id){
+            return;
+        }
+
         return $table_id;
 
     }

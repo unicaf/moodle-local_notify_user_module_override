@@ -393,10 +393,26 @@ function sync_to_send_email($courseid)
 
 }
 
+function duplicate_enabled($originalCourseId, $newCourseId){
+    global $DB;
+    $table = "local_course_reminder";
+    $is_original_course_defined = $DB->get_record($table, ['courseid' => $originalCourseId], 'enable');
+
+    if(!$is_original_course_defined){
+        return;
+    }else{
+//        var_dump($is_original_course_defined->enable);
+        $object = new \stdClass();
+        $object->enable = $is_original_course_defined->enable;
+        $object->courseid = $newCourseId;
+        $table_add = $DB->insert_record($table, $object);
+    }
+}
+
 
 function copy_course($event){
 
-  var_dump($event);
+//  var_dump($event);
 
 
 }
@@ -404,7 +420,10 @@ function copy_course($event){
 function restore_course($event){
 
     $event_data = $event->get_data();
-    $originalCourse= $event_data["other"]["originalcourseid"];
+//    var_dump($event_data);
+    $originalCourseId= $event_data["other"]["originalcourseid"];
+    $newCourseId = $event_data["objectid"];
+    duplicate_enabled($originalCourseId,$newCourseId);
 
 }
 
