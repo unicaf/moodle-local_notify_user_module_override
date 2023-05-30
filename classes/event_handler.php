@@ -396,7 +396,16 @@ function sync_to_send_email($courseid)
 
 function copy_course($event){
 
-  $origin_backup_course_id = $event->objectid;
+  var_dump($event);
+
+
+}
+
+function restore_course($event){
+
+    $event_data = $event->get_data();
+    $originalCourse= $event_data["other"]["originalcourseid"];
+
 }
 
 class event_handler
@@ -446,6 +455,12 @@ class event_handler
     {
         return copy_course($event);
     }
+
+    public static function restore_course(\core\event\course_restored $event)
+    {
+        return restore_course($event);
+    }
+
 
 
 }
