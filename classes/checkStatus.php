@@ -62,19 +62,25 @@ class checkStatusClass
 
         $record1 = new stdClass();
 
+//        $record1->id = $this->tableID->id;
         $record1->enable = $fromform->enable;
-        $record1->id = $this->tableID->id;
-        if(!$record1->id){
+
+
+        if(!$record1->id = $this->tableID->id){
+            //If the id does not exisit in the table do this
             $record1->courseid = $this->courseid;
+
             $DB->insert_record('local_course_reminder', $record1, false);
+            return;
         }
-
-
+        // If have ID in table continue from here
+        $record1->id = $this->tableID->id;
+        print_r("The ID for the record1 is the following ");
+        var_dump($record1->id);
 
         $DB->update_record('local_course_reminder', $record1);
 
         $get_id_local_course_reminder_email = $DB->get_records('local_course_reminder_email', ['courseid' => $this->courseid], "", "id");
-//       var_dump($get_id_local_course_reminder_email);
         $record2 = new stdClass();
 
         $record2->id = $get_id_local_course_reminder_email;
