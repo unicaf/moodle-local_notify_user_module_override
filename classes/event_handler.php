@@ -200,11 +200,11 @@ function deleteData($event)
     $event_data = $event->get_data();
 //    var_dump($event_data);
     $courseid = $event_data["courseid"];
-    $studentid = $event_data["relateduserid"];
+    $userid = $event_data["relateduserid"];
     $contextinstanceid = $event_data["contextinstanceid"];
 
     //GETS THE ID FOR THE ASSIGNMENT/QUIZ IF WE HAVE ALREADY DELETED MANUALLY FROM DATABASE , WE RETURN SO IT DOESNT PRODUCE AN ERROR
-    $table_id = get_id_reminder_email_table($courseid, $studentid, $contextinstanceid);
+    $table_id = get_id_reminder_email_table($courseid, $userid, $contextinstanceid);
     //DELETES THE FIELD
     deleteReminderEmailTable($table_id);
 
@@ -212,11 +212,11 @@ function deleteData($event)
 }
 
 //Gets ID from local_course_reminder_email
-function get_id_reminder_email_table($courseid, $studentid, $contextinstanceid)
+function get_id_reminder_email_table($courseid, $userid, $contextinstanceid)
 {
     global $DB;
     $table = "local_course_reminder_email";
-    $get_id = $DB->get_record($table, ["courseid" => $courseid, "studentid" => $studentid, "contextinstanceid" => $contextinstanceid], "id");
+    $get_id = $DB->get_record($table, ["courseid" => $courseid, "userid" => $userid, "contextinstanceid" => $contextinstanceid], "id");
     //If there is no ID in table due of reset or upgrade return to not show error.
     if (!$get_id) {
         //IF THERE IS NO ID IT RETURNS SO IT DOESNT PRODUCE AN ERROR
@@ -256,7 +256,7 @@ function getAssignOverride($userid, $assignid, $component)
     return $record;
 }
 
-function updateReminderEmailTable($courseid, $studentid, $assignid, $newCutOffDate, $newDueDate, $contextinstanceid, $component)
+function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $contextinstanceid, $component)
 {
     //USED TO UPDATE THE RECORD
     global $DB;
@@ -269,13 +269,13 @@ function updateReminderEmailTable($courseid, $studentid, $assignid, $newCutOffDa
         $quizid_or_assignmentid = 'assignmentid';
     }
 
-    $record = $DB->get_record('local_course_reminder_email', array('courseid' => $courseid, 'studentid' => $studentid, $quizid_or_assignmentid => $assignid, 'contextinstanceid' => $contextinstanceid), '*');
+    $record = $DB->get_record('local_course_reminder_email', array('courseid' => $courseid, 'userid' => $userid, $quizid_or_assignmentid => $assignid, 'contextinstanceid' => $contextinstanceid), '*');
     if (!$record) {
         //This is in place to fix errors when there is no record in our table but there is an override already set
         $main_date = get_original_date($assignid, $component);
 //        var_dump($main_date);
         //INSERTS INTO TABLE IF NOT FOUND
-        insert_course_reminder_email_table($courseid, $studentid, $assignid, $component, $main_date, $newDueDate, $contextinstanceid);
+        insert_course_reminder_email_table($courseid, $userid, $assignid, $component, $main_date, $newDueDate, $contextinstanceid);
         return;
     }
 
@@ -333,14 +333,14 @@ function getAssignmentOverrideDate($id, $table, $relatedStudent, $component)
 
 }
 
-function insert_course_reminder_email_table($courseid, $studentid, $quiz_or_assignment_ID, $component, $assignmentdate, $assignmentoverridedate, $contextinstanceid)
+function insert_course_reminder_email_table($courseid, $userid, $quiz_or_assignment_ID, $component, $assignmentdate, $assignmentoverridedate, $contextinstanceid)
 {
     //Adds record into database function
     global $DB;
     $table = 'local_course_reminder_email';
     $record = new \stdClass();
     $record->courseid = $courseid;
-    $record->studentid = $studentid;
+    $record->userid = $userid;
     $record->component = $component;
     $record->assignmentdate = $assignmentdate;
     $record->assignmentoverridedate = $assignmentoverridedate;

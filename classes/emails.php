@@ -78,7 +78,7 @@ function email_Student($studentObj, $typeOfUser)
     $assignmentID = $studentObj->assignmentid;
     $emailFrom = core_user::get_noreply_user();
     // Email of the student
-    $student = $studentObj->studentid;
+    $student = $studentObj->userid;
     //User object
     $emailofStudent = \core_user::get_user($student);
     //STUDENT FIRST NAME

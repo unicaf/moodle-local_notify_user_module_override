@@ -72,23 +72,24 @@ class checkStatusClass
             return;
 
         }
-
         // If have ID in table continue from here
-//        print_r("The ID for the record1 is the following ");
-        var_dump($record1);
 
         $DB->update_record('local_course_reminder', $record1);
 
-        $get_id_local_course_reminder_email = $DB->get_records('local_course_reminder_email', ['courseid' => $this->courseid], "", "id");
-        $record2 = new stdClass();
-
-        $record2->id = $get_id_local_course_reminder_email;
-        foreach ($record2->id as $record) {
-//           var_dump($record->id);
-            $record2->emailtosent = $fromform->enable;
-            $record2->id = $record->id;
-            $update_local_course_reminder_email = $DB->update_record('local_course_reminder_email', $record2);
-        }
+        /*This used to be used if a course had for example off notifiction and then turned on it would not sent email to students which had it off.
+        This is good to not send email to users which were not sent once it was off
+        */
+//        $get_id_local_course_reminder_email = $DB->get_records('local_course_reminder_email', ['courseid' => $this->courseid], "", "id");
+//
+//        $record2 = new stdClass();
+//
+//        $record2->id = $get_id_local_course_reminder_email;
+//        foreach ($record2->id as $record) {
+////           var_dump($record->id);
+//            $record2->emailtosent = $fromform->enable;
+//            $record2->id = $record->id;
+//            $update_local_course_reminder_email = $DB->update_record('local_course_reminder_email', $record2);
+//        }
 
 
     }
@@ -122,7 +123,7 @@ class checkStatusClass
     function who_to_send_notification($emailofUser, $courseName, $component, $assignmentName, $assignId, $assignmentDate, $assignmentOverrideDate, $assignment_url, $contextinstanceid)
     {
         $this->studentEmail = $emailofUser->email;
-        $this->studentid = $emailofUser->id;
+        $this->userid = $emailofUser->id;
         $this->courseName = $courseName;
         $this->component = $component;
         $this->assignmentname = $assignmentName;
@@ -135,7 +136,7 @@ class checkStatusClass
         $table = "local_course_reminder_email";
         $dataObj = new stdClass();
 //        $dataObj->studentEmail = $emailofUser->email;
-        $dataObj->studentid = $emailofUser->id;
+        $dataObj->userid = $emailofUser->id;
 //        var_dump($dataObj->studentid);
 //        $dataObj->coursename = $courseName;
         $dataObj->component = $component;
@@ -158,7 +159,7 @@ class checkStatusClass
         }
         //Stops duplicate entry.
 //        var_dump("I am here inserting record in DB");
-        $record_exisits = $DB->record_exists($table, ["courseid" => "$dataObj->courseid", "studentid" => "$dataObj->studentid", $assignment_or_quiz => $assignId]);
+        $record_exisits = $DB->record_exists($table, ["courseid" => "$dataObj->courseid", "userid" => "$dataObj->userid", $assignment_or_quiz => $assignId]);
 
         if (!$record_exisits) {
             //Adds to the database
