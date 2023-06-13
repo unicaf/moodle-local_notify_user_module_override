@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/course_reminder/db" VERSION="20230529" COMMENT="XMLDB file for Moodle local/course_reminder"
+<XMLDB PATH="local/course_reminder/db" VERSION="20230612" COMMENT="XMLDB file for Moodle local/course_reminder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -29,10 +29,11 @@
         <FIELD NAME="assignmentdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Assignment Date Original"/>
         <FIELD NAME="assignmentoverridedate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Assignment Overwrite Date"/>
         <FIELD NAME="contextinstanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="contextinstanceid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="USER ID FROM MOODLE"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="studentid" TYPE="foreign" FIELDS="studentid" REFTABLE="user" REFFIELDS="id" COMMENT="Student ID KEY"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" COMMENT="Student ID KEY from moodle USER ID"/>
         <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id" COMMENT="Course id KEY"/>
         <KEY NAME="assignmentid" TYPE="foreign" FIELDS="assignmentid" REFTABLE="assign" REFFIELDS="id" COMMENT="assignment ID key"/>
         <KEY NAME="quizid" TYPE="foreign" FIELDS="quizid" REFTABLE="quiz" REFFIELDS="id" COMMENT="Quiz id key"/>

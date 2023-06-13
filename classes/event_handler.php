@@ -56,7 +56,7 @@ function getData($event)
     $add_to_table_reminders->checkStatus();
 
     $is_enabled = $add_to_table_reminders->is_enabled();
-    $is_enabled = $is_enabled->enable;
+//    $is_enabled = $is_enabled->enable;
 
 
     //related user is the user which is affected - student

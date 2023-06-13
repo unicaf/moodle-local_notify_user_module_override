@@ -62,21 +62,20 @@ class checkStatusClass
 
         $record1 = new stdClass();
 
-//        $record1->id = $this->tableID->id;
+        $record1->id = $this->tableID;
         $record1->enable = $fromform->enable;
+        $record1->courseid = $this->courseid;
 
-
-        if(!$record1->id = $this->tableID->id){
-            //If the id does not exisit in the table do this
-            $record1->courseid = $this->courseid;
-
+//        If record doesnt exisit in table local_course_reminder then add it
+        if(!$record1->id ){
             $DB->insert_record('local_course_reminder', $record1, false);
             return;
+
         }
+
         // If have ID in table continue from here
-        $record1->id = $this->tableID->id;
-        print_r("The ID for the record1 is the following ");
-        var_dump($record1->id);
+//        print_r("The ID for the record1 is the following ");
+        var_dump($record1);
 
         $DB->update_record('local_course_reminder', $record1);
 
@@ -101,7 +100,7 @@ class checkStatusClass
         $is_enabled = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'enable');
 
         if(!$is_enabled){
-            return;
+          return;
         }
         return $is_enabled->enable;
 
@@ -113,10 +112,10 @@ class checkStatusClass
         global $DB;
         $table_id = $DB->get_record('local_course_reminder', ['courseid' => $this->courseid], 'id');
         if(!$table_id){
-            return;
-        }
+            return $table_id;
 
-        return $table_id;
+        }
+        return $table_id->id;
 
     }
 
@@ -148,7 +147,7 @@ class checkStatusClass
         $dataObj->assignmentoverridedate = $assignmentOverrideDate;
         $dataObj->contextinstanceid = $contextinstanceid;
         $dataObj->courseid = $this->courseid;
-        $dataObj->emailtosent = $this->is_enabled()->enable;
+        $dataObj->emailtosent = $this->is_enabled();
         var_dump($dataObj->component);
         if ($dataObj->component == "quiz") {
             $assignment_or_quiz = "quizid";
