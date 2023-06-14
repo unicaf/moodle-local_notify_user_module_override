@@ -75,7 +75,12 @@ function sent_email_time()
 function email_Student($studentObj, $typeOfUser)
 {
     global $USER, $DB;
+    print_r($studentObj);
+    print_r("Below is the get_coursemodule instance");
+//    print(get_coursemodule_from_instance('assign',$studentObj->coursemodulesid));
+    print_r(get_coursemodule_from_id("",$studentObj->coursemodulesid));
     $assignmentID = $studentObj->assignmentid;
+
     $emailFrom = core_user::get_noreply_user();
     // Email of the student
     $student = $studentObj->userid;
@@ -120,7 +125,7 @@ function email_Student($studentObj, $typeOfUser)
         $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
 
 
-        $coursemodulesid = $studentObj->contextinstanceid;
+        $coursemodulesid = $studentObj->coursemodulesid;
 
         //Assignment link
         $assignment_url = get_assignment_url($coursemodulesid, $component);
