@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/course_reminder/db" VERSION="20230613" COMMENT="XMLDB file for Moodle local/course_reminder"
+<XMLDB PATH="local/course_reminder/db" VERSION="20230614" COMMENT="XMLDB file for Moodle local/course_reminder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -28,7 +28,7 @@
         <FIELD NAME="component" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Component Assignment or Quiz"/>
         <FIELD NAME="assignmentdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Assignment Date Original"/>
         <FIELD NAME="assignmentoverridedate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Assignment Overwrite Date"/>
-        <FIELD NAME="contextinstanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="contextinstanceid"/>
+        <FIELD NAME="coursemodulesid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course_modules table ID"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

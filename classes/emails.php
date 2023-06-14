@@ -120,10 +120,10 @@ function email_Student($studentObj, $typeOfUser)
         $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
 
 
-        $contextinstanceid = $studentObj->contextinstanceid;
+        $coursemodulesid = $studentObj->contextinstanceid;
 
         //Assignment link
-        $assignment_url = get_assignment_url($contextinstanceid, $component);
+        $assignment_url = get_assignment_url($coursemodulesid, $component);
         //Makes it as a link
         $assignment_url = html_writer::link($assignment_url, $assignmentName);
 
@@ -173,13 +173,13 @@ function email_Student($studentObj, $typeOfUser)
 
 }
 
-function get_assignment_url($contextinstanceid, $component)
+function get_assignment_url($coursemodulesid, $component)
     //GETS ASSIGNMENT/QUIZ URL
 {
     if ($component == "assignment") {
-        return new \moodle_url('/mod/assign/view.php', array('id' => $contextinstanceid));
+        return new \moodle_url('/mod/assign/view.php', array('id' => $coursemodulesid));
     } elseif ($component == "quiz") {
-        return new \moodle_url('/mod/quiz/view.php', array('id' => $contextinstanceid));
+        return new \moodle_url('/mod/quiz/view.php', array('id' => $coursemodulesid));
     }
 }
 

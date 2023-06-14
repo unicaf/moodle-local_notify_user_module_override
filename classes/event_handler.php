@@ -75,7 +75,7 @@ function getData($event)
     // Either mod_assign or mod_quiz
     $component = $event_data["component"];
     // This is passed to create the correct URL for the email
-    $contextinstanceid = $event_data["contextinstanceid"];
+    $coursemodulesid = $event_data["contextinstanceid"];
 
 
 
@@ -84,7 +84,7 @@ function getData($event)
     if ($component === "mod_assign") {
         $component = "assignment";
         $assignId = $event_data["other"]["assignid"];
-        $assignment_url = get_assignment_url($contextinstanceid, $component);
+        $assignment_url = get_assignment_url($coursemodulesid, $component);
         $assignmentName = getAssignmentName($assignId, $table = "assign");
         //Assignment Date
         $assignmentDate = getAssignmentDate($assignId, $table = "assign", $component);
@@ -103,7 +103,7 @@ function getData($event)
     } elseif ($component == "mod_quiz") {
         $component = "quiz";
         $assignId = $event_data["other"]["quizid"];
-        $assignment_url = get_assignment_url($contextinstanceid, $component);
+        $assignment_url = get_assignment_url($coursemodulesid, $component);
         $assignmentName = getAssignmentName($assignId, $table = "quiz");
         $assignmentName = $assignmentName->name;
 
@@ -122,7 +122,7 @@ function getData($event)
     }
 
 
-    $who_to_send->who_to_send_notification($emailofUser, $courseName, $component, $assignmentName, $assignId, $assignmentDate, $assignmentOverrideDate, $assignment_url, $contextinstanceid);
+    $who_to_send->who_to_send_notification($emailofUser, $courseName, $component, $assignmentName, $assignId, $assignmentDate, $assignmentOverrideDate, $assignment_url, $coursemodulesid);
 
 // This checks to proceed with the script if the enable field in local_course_reminder table is set to 1 (enabled) SO IT DOESNT RUN IF ITS OFF IN SETTINGS
     if (!$is_enabled == "1") {
@@ -146,7 +146,7 @@ function updateData($event)
 
     $userid = $event_data["relateduserid"];
     $courseid = $event_data["courseid"];
-    $contextinstanceid = $event_data["contextinstanceid"];
+    $coursemodulesid = $event_data["contextinstanceid"];
 
     //FOR QUIZ
     if ($component == "mod_quiz") {
@@ -174,7 +174,7 @@ function updateData($event)
     }
 
     //UPDATES TABLE
-    updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $contextinstanceid, $component);
+    updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $coursemodulesid, $component);
 
 }
 
@@ -201,10 +201,10 @@ function deleteData($event)
 //    var_dump($event_data);
     $courseid = $event_data["courseid"];
     $userid = $event_data["relateduserid"];
-    $contextinstanceid = $event_data["contextinstanceid"];
+    $coursemodulesid = $event_data["contextinstanceid"];
 
     //GETS THE ID FOR THE ASSIGNMENT/QUIZ IF WE HAVE ALREADY DELETED MANUALLY FROM DATABASE , WE RETURN SO IT DOESNT PRODUCE AN ERROR
-    $table_id = get_id_reminder_email_table($courseid, $userid, $contextinstanceid);
+    $table_id = get_id_reminder_email_table($courseid, $userid, $coursemodulesid);
     //DELETES THE FIELD
     deleteReminderEmailTable($table_id);
 
@@ -212,11 +212,11 @@ function deleteData($event)
 }
 
 //Gets ID from local_course_reminder_email
-function get_id_reminder_email_table($courseid, $userid, $contextinstanceid)
+function get_id_reminder_email_table($courseid, $userid, $coursemodulesid)
 {
     global $DB;
     $table = "local_course_reminder_email";
-    $get_id = $DB->get_record($table, ["courseid" => $courseid, "userid" => $userid, "contextinstanceid" => $contextinstanceid], "id");
+    $get_id = $DB->get_record($table, ["courseid" => $courseid, "userid" => $userid, "coursemodulesid" => $coursemodulesid], "id");
     //If there is no ID in table due of reset or upgrade return to not show error.
     if (!$get_id) {
         //IF THERE IS NO ID IT RETURNS SO IT DOESNT PRODUCE AN ERROR
@@ -256,7 +256,7 @@ function getAssignOverride($userid, $assignid, $component)
     return $record;
 }
 
-function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $contextinstanceid, $component)
+function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $coursemodulesid, $component)
 {
     //USED TO UPDATE THE RECORD
     global $DB;
@@ -269,13 +269,13 @@ function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate,
         $quizid_or_assignmentid = 'assignmentid';
     }
 
-    $record = $DB->get_record('local_course_reminder_email', array('courseid' => $courseid, 'userid' => $userid, $quizid_or_assignmentid => $assignid, 'contextinstanceid' => $contextinstanceid), '*');
+    $record = $DB->get_record('local_course_reminder_email', array('courseid' => $courseid, 'userid' => $userid, $quizid_or_assignmentid => $assignid, 'coursemodulesid' => $coursemodulesid), '*');
     if (!$record) {
         //This is in place to fix errors when there is no record in our table but there is an override already set
         $main_date = get_original_date($assignid, $component);
 //        var_dump($main_date);
         //INSERTS INTO TABLE IF NOT FOUND
-        insert_course_reminder_email_table($courseid, $userid, $assignid, $component, $main_date, $newDueDate, $contextinstanceid);
+        insert_course_reminder_email_table($courseid, $userid, $assignid, $component, $main_date, $newDueDate, $coursemodulesid);
         return;
     }
 
@@ -333,7 +333,7 @@ function getAssignmentOverrideDate($id, $table, $relatedStudent, $component)
 
 }
 
-function insert_course_reminder_email_table($courseid, $userid, $quiz_or_assignment_ID, $component, $assignmentdate, $assignmentoverridedate, $contextinstanceid)
+function insert_course_reminder_email_table($courseid, $userid, $quiz_or_assignment_ID, $component, $assignmentdate, $assignmentoverridedate, $coursemodulesid)
 {
     //Adds record into database function
     global $DB;
@@ -344,7 +344,7 @@ function insert_course_reminder_email_table($courseid, $userid, $quiz_or_assignm
     $record->component = $component;
     $record->assignmentdate = $assignmentdate;
     $record->assignmentoverridedate = $assignmentoverridedate;
-    $record->contextinstanceid = $contextinstanceid;
+    $record->coursemodulesid = $coursemodulesid;
     $record->emailtosent = sync_to_send_email($courseid)->enable;
     $record->emailsent = '0';
     if ($component === 'quiz' || $component === "mod_quiz") {
@@ -360,13 +360,13 @@ function insert_course_reminder_email_table($courseid, $userid, $quiz_or_assignm
 }
 
 //Creates URL link for assignment
-function get_assignment_url($contextinstanceid, $component)
+function get_assignment_url($coursemodulesid, $component)
 {
     //CREATES URL FOR ASSIGNMENT/QUIZ
     if ($component == "mod_assign") {
-        return new \moodle_url('/mod/assign/view.php', array('id' => $contextinstanceid));
+        return new \moodle_url('/mod/assign/view.php', array('id' => $coursemodulesid));
     } elseif ($component == "mod_quiz") {
-        return new \moodle_url('/mod/quiz/view.php', array('id' => $contextinstanceid));
+        return new \moodle_url('/mod/quiz/view.php', array('id' => $coursemodulesid));
     }
 }
 
