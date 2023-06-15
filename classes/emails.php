@@ -76,12 +76,11 @@ function email_Student($studentObj, $typeOfUser)
 {
     global $USER, $DB;
     print_r($studentObj);
-    print_r("Below is the get_coursemodule instance");
-//    print(get_coursemodule_from_instance('assign',$studentObj->coursemodulesid));
+
     $course_module_from_id = get_coursemodule_from_id("",$studentObj->coursemodulesid);
-    print_r($course_module_from_id);
-//    var_dump($course_module_from_id->{'modname'});
-    print_r($course_module_from_id);
+
+
+
 
 //    $assignmentID = $studentObj->assignmentid;
     $assignmentID = $course_module_from_id->{'instance'};
@@ -98,13 +97,18 @@ function email_Student($studentObj, $typeOfUser)
     $studentLastName = $emailofStudent->lastname;
 //    $component = $studentObj->component;
     $component = $course_module_from_id->{'modname'};
-    if ($component == 'quiz') {
-        $assignmentID = $studentObj->quizid;
-    }
+
+
+//    if ($component == 'quiz') {
+//        $assignmentID = $studentObj->quizid;
+//    }
+
+
+
     //Assignment Name
 //    $assignmentName = getAssignmentName($assignmentID, $component);
     $assignmentName = $course_module_from_id->{'name'};
-    var_dump($assignmentName);
+//    var_dump($assignmentName);
 //    $assignmentName = $assignmentName->name;
     //Course ID
 //    $courseid = $studentObj->courseid;
