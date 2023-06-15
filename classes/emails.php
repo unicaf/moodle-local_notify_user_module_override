@@ -78,8 +78,14 @@ function email_Student($studentObj, $typeOfUser)
     print_r($studentObj);
     print_r("Below is the get_coursemodule instance");
 //    print(get_coursemodule_from_instance('assign',$studentObj->coursemodulesid));
-    print_r(get_coursemodule_from_id("",$studentObj->coursemodulesid));
-    $assignmentID = $studentObj->assignmentid;
+    $course_module_from_id = get_coursemodule_from_id("",$studentObj->coursemodulesid);
+    print_r($course_module_from_id);
+//    var_dump($course_module_from_id->{'modname'});
+    print_r($course_module_from_id);
+
+//    $assignmentID = $studentObj->assignmentid;
+    $assignmentID = $course_module_from_id->{'instance'};
+
 
     $emailFrom = core_user::get_noreply_user();
     // Email of the student
@@ -90,15 +96,19 @@ function email_Student($studentObj, $typeOfUser)
     $studentFirstName = $emailofStudent->firstname;
     //STUDENT LAST NAME
     $studentLastName = $emailofStudent->lastname;
-    $component = $studentObj->component;
+//    $component = $studentObj->component;
+    $component = $course_module_from_id->{'modname'};
     if ($component == 'quiz') {
         $assignmentID = $studentObj->quizid;
     }
     //Assignment Name
-    $assignmentName = getAssignmentName($assignmentID, $component);
-    $assignmentName = $assignmentName->name;
+//    $assignmentName = getAssignmentName($assignmentID, $component);
+    $assignmentName = $course_module_from_id->{'name'};
+    var_dump($assignmentName);
+//    $assignmentName = $assignmentName->name;
     //Course ID
-    $courseid = $studentObj->courseid;
+//    $courseid = $studentObj->courseid;
+    $courseid = $course_module_from_id->{'course'};
     $student_id_number = $emailofStudent->idnumber;
     $courseFullName = getCourseName($courseid)->fullname;
     //Shortname is also know as offer
@@ -181,7 +191,7 @@ function email_Student($studentObj, $typeOfUser)
 function get_assignment_url($coursemodulesid, $component)
     //GETS ASSIGNMENT/QUIZ URL
 {
-    if ($component == "assignment") {
+    if ($component == "assign") {
         return new \moodle_url('/mod/assign/view.php', array('id' => $coursemodulesid));
     } elseif ($component == "quiz") {
         return new \moodle_url('/mod/quiz/view.php', array('id' => $coursemodulesid));
@@ -196,7 +206,7 @@ function getAssignmentName($id, $component)
     an object with the name of the assignment/quiz
     */
     global $DB;
-    if ($component == "assignment") {
+    if ($component == "assign") {
         return $assignmentName = $DB->get_record("assign", array('id' => $id), 'name');
     } elseif ($component == "quiz") {
         return $assignmentName = $DB->get_record('quiz', array('id' => $id), 'name');
