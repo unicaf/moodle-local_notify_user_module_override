@@ -135,7 +135,7 @@ function email_Student($studentObj, $typeOfUser)
     //EMAILS TO STUDENT
     if ($typeOfUser === 'student') {
         //Email of Unicaf extenuating Circumstances
-        $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
+        $extenuatingCircumstances = html_writer::link("mailto:support@unicaf.org", "support@unicaf.org");
 
 
         $coursemodulesid = $studentObj->coursemodulesid;
@@ -150,11 +150,11 @@ function email_Student($studentObj, $typeOfUser)
         //Subject of email
         $subject = "Your course ".$courseFullName." has some changes in ".$component." has changed dates";
         //Message of email
-        $message = "Dear ".$studentFirstName."\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  ".$courseShortName." ".$courseFullName." ".$student_group."
-        has been approved .\n\n The assessment deadline for ".$assignment_url." has been changed from ".$assignmentDate." to  <strong> ".$assignmentOverrideDate." </strong>. \n\n"
-            ."In case you have already submitted ".$component." ".$assignment_url." prior or on ".$assignmentOverrideDate.", then rest assured that your assignment will be sent for marking .\n\n
-        In case you are yet to submit ".$component." "."$assignment_url".", please do so no later than by the new extended deadline ".$assignmentOverrideDate.
-            "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on ".$extenuatingCircumstances;
+
+        $message = "Dear ".$studentFirstName."\n\n We would like to inform you the assessment deadline for  ".$assignment_url." has been changed from ".$assignmentDate." to  <strong> ".$assignmentOverrideDate." </strong>. \n\n "
+            ."In case you have already submitted ".$component."  prior or on ".$assignmentOverrideDate.", then rest assured that your assignment will be sent for marking .\n\n
+        In case you are yet to submit ".$component." ".", please do so prior to the new extended deadline ".$assignmentOverrideDate.
+            "\n\n Should you require any further clarification, please do not hesitate to contact the Student Support  team directly on ".$extenuatingCircumstances;
         // Function to send email
         email_to_user($emailofStudent, $emailFrom, $subject, $message, nl2br($message), "", "", "");
         email_sent("local_course_reminder_email", $studentObj->id);
@@ -169,7 +169,7 @@ function email_Student($studentObj, $typeOfUser)
         $group_id = groups_get_group_by_name($courseid, $student_group);
         //Gets Teachers of the Group.
         $teachers = get_role_users($role->id, $context, "", "", "", "", $group_id);
-    print_r($teachers);
+//    print_r($teachers);
         $subject = "Student Extension for course ".$courseShortName." for student ".$studentFirstName." has been granted";
 
         //Emails each Teacher
