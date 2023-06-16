@@ -139,7 +139,7 @@ class checkStatusClass
         $dataObj->userid = $emailofUser->id;
 //        var_dump($dataObj->studentid);
 //        $dataObj->coursename = $courseName;
-        $dataObj->component = $component;
+//        $dataObj->component = $component;
 //        var_dump(  $dataObj->component);
         $dataObj->assigmentname = $assignmentName;
 //        $dataObj->assignmentid = $assignId;
@@ -147,19 +147,19 @@ class checkStatusClass
         $dataObj->assignmentdate = $assignmentDate;
         $dataObj->assignmentoverridedate = $assignmentOverrideDate;
         $dataObj->coursemodulesid = $coursemodulesid;
-        $dataObj->courseid = $this->courseid;
+//        $dataObj->courseid = $this->courseid;
         $dataObj->emailtosent = $this->is_enabled();
 //        var_dump($dataObj);
-        if ($dataObj->component == "quiz") {
-            $assignment_or_quiz = "quizid";
-            $dataObj->quizid = $assignId;
-        } elseif ($dataObj->component == 'assignment') {
-            $assignment_or_quiz = "assignmentid";
-            $dataObj->assignmentid = $assignId;
-        }
+//        if ($dataObj->component == "quiz") {
+//            $assignment_or_quiz = "quizid";
+//            $dataObj->quizid = $assignId;
+//        } elseif ($dataObj->component == 'assignment') {
+//            $assignment_or_quiz = "assignmentid";
+//            $dataObj->assignmentid = $assignId;
+//        }
         //Stops duplicate entry.
 //        var_dump("I am here inserting record in DB");
-        $record_exisits = $DB->record_exists($table, ["courseid" => "$dataObj->courseid", "userid" => "$dataObj->userid", $assignment_or_quiz => $assignId]);
+        $record_exisits = $DB->record_exists($table, ["coursemodulesid" => "$dataObj->coursemodulesid", "userid" => "$dataObj->userid"]);
 
         if (!$record_exisits) {
             //Adds to the database

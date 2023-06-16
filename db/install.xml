@@ -23,7 +23,7 @@
         <FIELD NAME="emailsent" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Has the email been sent"/>
         <FIELD NAME="emailtime" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Email sent time"/>
         <FIELD NAME="assignmentdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Assignment Date Original"/>
-        <FIELD NAME="assignmentoverridedate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Assignment Overwrite Date"/>
+        <FIELD NAME="assignmentoverridedate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Assignment Overwrite Date"/>
         <FIELD NAME="coursemodulesid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course_modules table ID"/>
       </FIELDS>
       <KEYS>

@@ -199,12 +199,12 @@ function deleteData($event)
     //GETS COURSE DATA
     $event_data = $event->get_data();
 //    var_dump($event_data);
-    $courseid = $event_data["courseid"];
+//    $courseid = $event_data["courseid"];
     $userid = $event_data["relateduserid"];
     $coursemodulesid = $event_data["contextinstanceid"];
 
     //GETS THE ID FOR THE ASSIGNMENT/QUIZ IF WE HAVE ALREADY DELETED MANUALLY FROM DATABASE , WE RETURN SO IT DOESNT PRODUCE AN ERROR
-    $table_id = get_id_reminder_email_table($courseid, $userid, $coursemodulesid);
+    $table_id = get_id_reminder_email_table( $userid, $coursemodulesid);
     //DELETES THE FIELD
     deleteReminderEmailTable($table_id);
 
@@ -212,11 +212,11 @@ function deleteData($event)
 }
 
 //Gets ID from local_course_reminder_email
-function get_id_reminder_email_table($courseid, $userid, $coursemodulesid)
+function get_id_reminder_email_table( $userid, $coursemodulesid)
 {
     global $DB;
     $table = "local_course_reminder_email";
-    $get_id = $DB->get_record($table, ["courseid" => $courseid, "userid" => $userid, "coursemodulesid" => $coursemodulesid], "id");
+    $get_id = $DB->get_record($table, [ "userid" => $userid, "coursemodulesid" => $coursemodulesid], "id");
     //If there is no ID in table due of reset or upgrade return to not show error.
     if (!$get_id) {
         //IF THERE IS NO ID IT RETURNS SO IT DOESNT PRODUCE AN ERROR
@@ -263,19 +263,19 @@ function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate,
     $table = 'local_course_reminder_email';
 
 
-    if ($component == "quiz") {
-        $quizid_or_assignmentid = 'quizid';
-    } elseif ($component == 'assignment') {
-        $quizid_or_assignmentid = 'assignmentid';
-    }
+//    if ($component == "quiz") {
+//        $quizid_or_assignmentid = 'quizid';
+//    } elseif ($component == 'assignment') {
+//        $quizid_or_assignmentid = 'assignmentid';
+//    }
 
-    $record = $DB->get_record('local_course_reminder_email', array('courseid' => $courseid, 'userid' => $userid, $quizid_or_assignmentid => $assignid, 'coursemodulesid' => $coursemodulesid), '*');
+    $record = $DB->get_record('local_course_reminder_email', array( 'userid' => $userid, 'coursemodulesid' => $coursemodulesid), '*');
     if (!$record) {
         //This is in place to fix errors when there is no record in our table but there is an override already set
         $main_date = get_original_date($assignid, $component);
 //        var_dump($main_date);
         //INSERTS INTO TABLE IF NOT FOUND
-        insert_course_reminder_email_table($courseid, $userid, $assignid, $component, $main_date, $newDueDate, $coursemodulesid);
+        insert_course_reminder_email_table( $userid,$component, $main_date, $newDueDate, $coursemodulesid);
         return;
     }
 
@@ -333,25 +333,25 @@ function getAssignmentOverrideDate($id, $table, $relatedStudent, $component)
 
 }
 
-function insert_course_reminder_email_table($courseid, $userid, $quiz_or_assignment_ID, $component, $assignmentdate, $assignmentoverridedate, $coursemodulesid)
+function insert_course_reminder_email_table( $userid,  $component, $assignmentdate, $assignmentoverridedate, $coursemodulesid)
 {
     //Adds record into database function
     global $DB;
     $table = 'local_course_reminder_email';
     $record = new \stdClass();
-    $record->courseid = $courseid;
+//    $record->courseid = $courseid;
     $record->userid = $userid;
-    $record->component = $component;
+//    $record->component = $component;
     $record->assignmentdate = $assignmentdate;
     $record->assignmentoverridedate = $assignmentoverridedate;
     $record->coursemodulesid = $coursemodulesid;
-    $record->emailtosent = sync_to_send_email($courseid)->enable;
+//    $record->emailtosent = sync_to_send_email($courseid)->enable;
     $record->emailsent = '0';
     if ($component === 'quiz' || $component === "mod_quiz") {
-        $record->quizid = $quiz_or_assignment_ID;
+//        $record->quizid = $quiz_or_assignment_ID;
         $record->assignmentdate = $assignmentdate->timeclose;
     } elseif ($component === 'assignment' || $component === 'assign') {
-        $record->assignmentid = $quiz_or_assignment_ID;
+//        $record->assignmentid = $quiz_or_assignment_ID;
         $record->assignmentdate = $assignmentdate->duedate;
     }
     return $DB->insert_record($table, $record);
