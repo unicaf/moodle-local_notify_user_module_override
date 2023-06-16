@@ -51,12 +51,12 @@ function getData($event)
     $add_to_table_reminders = new \checkStatusClass($courseID);
     $who_to_send = new \checkStatusClass($courseID);
 
-//    var_dump($add_to_table_reminders);
+
     // Adds to table 
     $add_to_table_reminders->checkStatus();
 
     $is_enabled = $add_to_table_reminders->is_enabled();
-//    $is_enabled = $is_enabled->enable;
+
 
 
     //related user is the user which is affected - student
@@ -65,8 +65,6 @@ function getData($event)
 //    Gets email of student
     $emailofUser = \core_user::get_user($relatedStudent);
 
-    //Course ID
-//    $courseID = $event_data["courseid"];
 
 
     // Course NAME
@@ -91,12 +89,7 @@ function getData($event)
 
         //Assignment Override Date
         $assignmentOverrideDate = getAssignmentOverrideDate($assignId, $table = "assign_overrides", $relatedStudent, $component);
-//      var_dump("Orignal date is ".$assignmentDate->duedate . " the new date override is " . $assignmentOverrideDate->duedate);
-//        var_dump(get_teacher());
-//        die();
         $assignmentDate = $assignmentDate->duedate;
-
-
         $assignmentOverrideDate = $assignmentOverrideDate->duedate;
 
     //FOR QUIZ
@@ -122,12 +115,16 @@ function getData($event)
     }
 
 
-    $who_to_send->who_to_send_notification($emailofUser, $courseName, $component, $assignmentName, $assignId, $assignmentDate, $assignmentOverrideDate, $assignment_url, $coursemodulesid);
 
-// This checks to proceed with the script if the enable field in local_course_reminder table is set to 1 (enabled) SO IT DOESNT RUN IF ITS OFF IN SETTINGS
+
+// Returns when the settings is set to 0
     if (!$is_enabled == "1") {
+
         return;
 
+    }else{
+        //Adds to table local_course_reminder_email when the settings of Course reminders is set to 1
+        $who_to_send->who_to_send_notification($emailofUser, $courseName, $component, $assignmentName, $assignId, $assignmentDate, $assignmentOverrideDate, $assignment_url, $coursemodulesid);
     }
 
 
@@ -173,8 +170,20 @@ function updateData($event)
         $newCutOffDate = $record->cutoffdate;
     }
 
+    //Checks if Course has enabled to send reminders
+    $check_if_enabled = new \checkStatusClass($courseid);
+    $is_enabled = $check_if_enabled->is_enabled();
+    //If course has reminders set to OFF it will not get passed into the database
+    if (!$is_enabled == "1") {
+
+        return;
+
+    }else{
+        //Adds to table local_course_reminder_email when the settings of Course reminders is set to 1
+        updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $coursemodulesid, $component);
+    }
     //UPDATES TABLE
-    updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate, $newDueDate, $coursemodulesid, $component);
+
 
 }
 
@@ -198,8 +207,7 @@ function deleteData($event)
     $courseObject = $COURSE;
     //GETS COURSE DATA
     $event_data = $event->get_data();
-//    var_dump($event_data);
-//    $courseid = $event_data["courseid"];
+
     $userid = $event_data["relateduserid"];
     $coursemodulesid = $event_data["contextinstanceid"];
 
@@ -263,12 +271,6 @@ function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate,
     $table = 'local_course_reminder_email';
 
 
-//    if ($component == "quiz") {
-//        $quizid_or_assignmentid = 'quizid';
-//    } elseif ($component == 'assignment') {
-//        $quizid_or_assignmentid = 'assignmentid';
-//    }
-
     $record = $DB->get_record('local_course_reminder_email', array( 'userid' => $userid, 'coursemodulesid' => $coursemodulesid), '*');
     if (!$record) {
         //This is in place to fix errors when there is no record in our table but there is an override already set
@@ -284,7 +286,7 @@ function updateReminderEmailTable($courseid, $userid, $assignid, $newCutOffDate,
 
     $object->id = $record->id;
     $object->assignmentoverridedate = $newDueDate;
-    $object->emailtosent = sync_to_send_email($courseid)->enable;
+//    $object->emailtosent = sync_to_send_email($courseid)->enable;
     $object->emailsent = "0";
 
 
@@ -410,12 +412,7 @@ function duplicate_enabled($originalCourseId, $newCourseId){
 }
 
 
-function copy_course($event){
 
-//  var_dump($event);
-
-
-}
 
 function restore_course($event){
 

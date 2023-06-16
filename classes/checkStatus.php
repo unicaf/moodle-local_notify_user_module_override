@@ -135,30 +135,16 @@ class checkStatusClass
         global $DB;
         $table = "local_course_reminder_email";
         $dataObj = new stdClass();
-//        $dataObj->studentEmail = $emailofUser->email;
+
         $dataObj->userid = $emailofUser->id;
-//        var_dump($dataObj->studentid);
-//        $dataObj->coursename = $courseName;
-//        $dataObj->component = $component;
-//        var_dump(  $dataObj->component);
+
         $dataObj->assigmentname = $assignmentName;
-//        $dataObj->assignmentid = $assignId;
+
 
         $dataObj->assignmentdate = $assignmentDate;
         $dataObj->assignmentoverridedate = $assignmentOverrideDate;
         $dataObj->coursemodulesid = $coursemodulesid;
-//        $dataObj->courseid = $this->courseid;
-        $dataObj->emailtosent = $this->is_enabled();
-//        var_dump($dataObj);
-//        if ($dataObj->component == "quiz") {
-//            $assignment_or_quiz = "quizid";
-//            $dataObj->quizid = $assignId;
-//        } elseif ($dataObj->component == 'assignment') {
-//            $assignment_or_quiz = "assignmentid";
-//            $dataObj->assignmentid = $assignId;
-//        }
         //Stops duplicate entry.
-//        var_dump("I am here inserting record in DB");
         $record_exisits = $DB->record_exists($table, ["coursemodulesid" => "$dataObj->coursemodulesid", "userid" => "$dataObj->userid"]);
 
         if (!$record_exisits) {

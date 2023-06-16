@@ -28,7 +28,7 @@ function send_email_by_cron()
     //MAIN FUNCTIONALITY TO RUN BY CRON TO GET WHICH EMAILS TO SEND
     global $DB;
     $table = 'local_course_reminder_email';
-    $get_record_for_cron = $DB->get_records($table, ["emailtosent" => "1", "emailsent" => "0"], '', "*");
+    $get_record_for_cron = $DB->get_records($table, [ "emailsent" => "0"], '', "*");
     $keys = array_keys($get_record_for_cron);
 
 
@@ -57,7 +57,6 @@ function email_sent($table, $id)
     $object = new stdClass();
     $object->id = $id;
     $object->emailsent = "1";
-    $object->emailtosent = "0";
     $object->emailtime = sent_email_time();
 //    var_dump($object);
 
