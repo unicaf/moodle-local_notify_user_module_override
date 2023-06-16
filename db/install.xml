@@ -28,7 +28,7 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" COMMENT="Student ID KEY from moodle USER ID"/>
-        <KEY NAME="coursemodulesid" TYPE="foreign-unique" FIELDS="coursemodulesid" REFTABLE="course_modules" REFFIELDS="id" COMMENT="ID from course_modules"/>
+        <KEY NAME="coursemodulesid" TYPE="foreign" FIELDS="coursemodulesid" REFTABLE="course_modules" REFFIELDS="id" COMMENT="ID from course_modules"/>
       </KEYS>
     </TABLE>
   </TABLES>

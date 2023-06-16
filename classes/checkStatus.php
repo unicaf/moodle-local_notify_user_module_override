@@ -145,14 +145,15 @@ class checkStatusClass
         $dataObj->assignmentoverridedate = $assignmentOverrideDate;
         $dataObj->coursemodulesid = $coursemodulesid;
         //Stops duplicate entry.
-        $record_exisits = $DB->record_exists($table, ["coursemodulesid" => "$dataObj->coursemodulesid", "userid" => "$dataObj->userid"]);
+
+        $record_exisits = $DB->record_exists($table, ["coursemodulesid" => $dataObj->coursemodulesid, "userid" => $dataObj->userid]);
+
 
         if (!$record_exisits) {
             //Adds to the database
 
             $DB->insert_record($table, $dataObj);
         }
-
 
     }
 

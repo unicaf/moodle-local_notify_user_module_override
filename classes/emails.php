@@ -169,7 +169,7 @@ function email_Student($studentObj, $typeOfUser)
         $group_id = groups_get_group_by_name($courseid, $student_group);
         //Gets Teachers of the Group.
         $teachers = get_role_users($role->id, $context, "", "", "", "", $group_id);
-//    print_r($teachers);
+    print_r($teachers);
         $subject = "Student Extension for course ".$courseShortName." for student ".$studentFirstName." has been granted";
 
         //Emails each Teacher
