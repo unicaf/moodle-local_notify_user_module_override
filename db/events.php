@@ -49,10 +49,6 @@ $observers = [
         'callback' => '\local_course_reminder\event_handler::quiz_user_override_deleted'
     ],
     [
-        'eventname' => '\core\event\course_backup_created',
-        'callback' => '\local_course_reminder\event_handler::copy_course'
-    ],
-    [
         'eventname' => '\core\event\course_restored',
         'callback' => '\local_course_reminder\event_handler::restore_course'
     ]

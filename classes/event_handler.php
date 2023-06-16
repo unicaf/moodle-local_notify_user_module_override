@@ -467,10 +467,7 @@ class event_handler
         return deleteData($event);
     }
 
-    public static function copy_course(\core\event\course_backup_created $event)
-    {
-        return copy_course($event);
-    }
+
 
     public static function restore_course(\core\event\course_restored $event)
     {
