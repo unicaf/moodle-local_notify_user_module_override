@@ -20,9 +20,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_course_reminder\task;
-require_once($CFG->dirroot."/local/course_reminder/classes/emails.php");
 
+
+namespace local_course_reminder\task;
+//require_once('../../../../config.php');
+//require_once($CFG->dirroot."/local/course_reminder/classes/emails.php");
+include_once($CFG->dirroot."/local/course_reminder/classes/emails.php");
 class send_notification_task extends \core\task\scheduled_task
 {
     public function get_name()

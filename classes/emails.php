@@ -28,7 +28,7 @@ function send_email_by_cron()
     //MAIN FUNCTIONALITY TO RUN BY CRON TO GET WHICH EMAILS TO SEND
     global $DB;
     $table = 'local_course_reminder_email';
-    $get_record_for_cron = $DB->get_records($table, ["emailtosent" => "1", "emailsent" => "0"], '', "*");
+    $get_record_for_cron = $DB->get_records($table, [ "emailsent" => "0"], '', "*");
     $keys = array_keys($get_record_for_cron);
 
 
@@ -57,7 +57,6 @@ function email_sent($table, $id)
     $object = new stdClass();
     $object->id = $id;
     $object->emailsent = "1";
-    $object->emailtosent = "0";
     $object->emailtime = sent_email_time();
 //    var_dump($object);
 
@@ -75,25 +74,44 @@ function sent_email_time()
 function email_Student($studentObj, $typeOfUser)
 {
     global $USER, $DB;
-    $assignmentID = $studentObj->assignmentid;
+    print_r($studentObj);
+
+    $course_module_from_id = get_coursemodule_from_id("",$studentObj->coursemodulesid);
+
+
+
+
+//    $assignmentID = $studentObj->assignmentid;
+    $assignmentID = $course_module_from_id->{'instance'};
+
+
     $emailFrom = core_user::get_noreply_user();
     // Email of the student
-    $student = $studentObj->studentid;
+    $student = $studentObj->userid;
     //User object
     $emailofStudent = \core_user::get_user($student);
     //STUDENT FIRST NAME
     $studentFirstName = $emailofStudent->firstname;
     //STUDENT LAST NAME
     $studentLastName = $emailofStudent->lastname;
-    $component = $studentObj->component;
-    if ($component == 'quiz') {
-        $assignmentID = $studentObj->quizid;
-    }
+//    $component = $studentObj->component;
+    $component = $course_module_from_id->{'modname'};
+
+
+//    if ($component == 'quiz') {
+//        $assignmentID = $studentObj->quizid;
+//    }
+
+
+
     //Assignment Name
-    $assignmentName = getAssignmentName($assignmentID, $component);
-    $assignmentName = $assignmentName->name;
+//    $assignmentName = getAssignmentName($assignmentID, $component);
+    $assignmentName = $course_module_from_id->{'name'};
+//    var_dump($assignmentName);
+//    $assignmentName = $assignmentName->name;
     //Course ID
-    $courseid = $studentObj->courseid;
+//    $courseid = $studentObj->courseid;
+    $courseid = $course_module_from_id->{'course'};
     $student_id_number = $emailofStudent->idnumber;
     $courseFullName = getCourseName($courseid)->fullname;
     //Shortname is also know as offer
@@ -117,13 +135,13 @@ function email_Student($studentObj, $typeOfUser)
     //EMAILS TO STUDENT
     if ($typeOfUser === 'student') {
         //Email of Unicaf extenuating Circumstances
-        $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
+        $extenuatingCircumstances = html_writer::link("mailto:support@unicaf.org", "support@unicaf.org");
 
 
-        $contextinstanceid = $studentObj->contextinstanceid;
+        $coursemodulesid = $studentObj->coursemodulesid;
 
         //Assignment link
-        $assignment_url = get_assignment_url($contextinstanceid, $component);
+        $assignment_url = get_assignment_url($coursemodulesid, $component);
         //Makes it as a link
         $assignment_url = html_writer::link($assignment_url, $assignmentName);
 
@@ -132,11 +150,11 @@ function email_Student($studentObj, $typeOfUser)
         //Subject of email
         $subject = "Your course ".$courseFullName." has some changes in ".$component." has changed dates";
         //Message of email
-        $message = "Dear ".$studentFirstName."\n\n Following the review of your extenuating circumstances claim, we would like to inform you that your application for an extenstion for  ".$courseShortName." ".$courseFullName." ".$student_group."
-        has been approved .\n\n The assessment deadline for ".$assignment_url." has been changed from ".$assignmentDate." to  <strong> ".$assignmentOverrideDate." </strong>. \n\n"
-            ."In case you have already submitted ".$component." ".$assignment_url." prior or on ".$assignmentOverrideDate.", then rest assured that your assignment will be sent for marking .\n\n
-        In case you are yet to submit ".$component." "."$assignment_url".", please do so no later than by the new extended deadline ".$assignmentOverrideDate.
-            "\n\n Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on ".$extenuatingCircumstances;
+
+        $message = "Dear ".$studentFirstName."\n\n We would like to inform you the assessment deadline for  ".$assignment_url." has been changed from ".$assignmentDate." to  <strong> ".$assignmentOverrideDate." </strong>. \n\n "
+            ."In case you have already submitted ".$component."  prior or on ".$assignmentOverrideDate.", then rest assured that your assignment will be sent for marking .\n\n
+        In case you are yet to submit ".$component." ".", please do so prior to the new extended deadline ".$assignmentOverrideDate.
+            "\n\n Should you require any further clarification, please do not hesitate to contact the Student Support  team directly on ".$extenuatingCircumstances;
         // Function to send email
         email_to_user($emailofStudent, $emailFrom, $subject, $message, nl2br($message), "", "", "");
         email_sent("local_course_reminder_email", $studentObj->id);
@@ -173,13 +191,13 @@ function email_Student($studentObj, $typeOfUser)
 
 }
 
-function get_assignment_url($contextinstanceid, $component)
+function get_assignment_url($coursemodulesid, $component)
     //GETS ASSIGNMENT/QUIZ URL
 {
-    if ($component == "assignment") {
-        return new \moodle_url('/mod/assign/view.php', array('id' => $contextinstanceid));
+    if ($component == "assign") {
+        return new \moodle_url('/mod/assign/view.php', array('id' => $coursemodulesid));
     } elseif ($component == "quiz") {
-        return new \moodle_url('/mod/quiz/view.php', array('id' => $contextinstanceid));
+        return new \moodle_url('/mod/quiz/view.php', array('id' => $coursemodulesid));
     }
 }
 
@@ -191,7 +209,7 @@ function getAssignmentName($id, $component)
     an object with the name of the assignment/quiz
     */
     global $DB;
-    if ($component == "assignment") {
+    if ($component == "assign") {
         return $assignmentName = $DB->get_record("assign", array('id' => $id), 'name');
     } elseif ($component == "quiz") {
         return $assignmentName = $DB->get_record('quiz', array('id' => $id), 'name');

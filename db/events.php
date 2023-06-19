@@ -47,5 +47,9 @@ $observers = [
     [ //Quiz override deleted
         'eventname' => '\mod_quiz\event\user_override_deleted',
         'callback' => '\local_course_reminder\event_handler::quiz_user_override_deleted'
+    ],
+    [
+        'eventname' => '\core\event\course_restored',
+        'callback' => '\local_course_reminder\event_handler::restore_course'
     ]
 ];
