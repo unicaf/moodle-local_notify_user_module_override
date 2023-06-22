@@ -98,7 +98,7 @@ function getData($event)
         $assignId = $event_data["other"]["quizid"];
         $assignment_url = get_assignment_url($coursemodulesid, $component);
         $assignmentName = getAssignmentName($assignId, $table = "quiz");
-        $assignmentName = $assignmentName->name;
+//        $assignmentName = $assignmentName->name;
 
         //Quiz Date
         $assignmentDate = getAssignmentDate($assignId, $table = "quiz", $component);
