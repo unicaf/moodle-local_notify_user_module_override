@@ -162,7 +162,7 @@ function email_Student($studentObj, $typeOfUser)
         // EMAILS THE TEACHER
     } elseif ($typeOfUser === "teacher") {
         //Gets ID for 'editing tutor'
-        $role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $role = $DB->get_record('role', array('shortname' => 'teacher','shortname' => 'editingteacher'));
         $context = context_course::instance($courseid);
 
         //Gets Group ID of the student
