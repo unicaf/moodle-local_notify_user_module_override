@@ -147,7 +147,7 @@ function email_Student($studentObj, $typeOfUser)
 
         // EMAILS THE TEACHER
     } elseif ($typeOfUser === "teacher") {
-        //Gets ID for 'editing tutor'
+        //Gets ID for 'teacher'
         $role = $DB->get_record('role', array('shortname' => 'teacher'),"id");
         $context = context_course::instance($courseid);
 
