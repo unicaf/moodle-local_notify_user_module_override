@@ -53,12 +53,12 @@ function email_sent($table, $id)
 {
     global $DB;
 
-//    var_dump($id);
+
     $object = new stdClass();
     $object->id = $id;
     $object->emailsent = "1";
     $object->emailtime = sent_email_time();
-//    var_dump($object);
+
 
     $DB->update_record($table, $object);
 
@@ -74,14 +74,11 @@ function sent_email_time()
 function email_Student($studentObj, $typeOfUser)
 {
     global $USER, $DB;
-    print_r($studentObj);
+
 
     $course_module_from_id = get_coursemodule_from_id("",$studentObj->coursemodulesid);
 
 
-
-
-//    $assignmentID = $studentObj->assignmentid;
     $assignmentID = $course_module_from_id->{'instance'};
 
 
@@ -94,23 +91,12 @@ function email_Student($studentObj, $typeOfUser)
     $studentFirstName = $emailofStudent->firstname;
     //STUDENT LAST NAME
     $studentLastName = $emailofStudent->lastname;
-//    $component = $studentObj->component;
+
     $component = $course_module_from_id->{'modname'};
 
 
-//    if ($component == 'quiz') {
-//        $assignmentID = $studentObj->quizid;
-//    }
-
-
-
-    //Assignment Name
-//    $assignmentName = getAssignmentName($assignmentID, $component);
     $assignmentName = $course_module_from_id->{'name'};
-//    var_dump($assignmentName);
-//    $assignmentName = $assignmentName->name;
-    //Course ID
-//    $courseid = $studentObj->courseid;
+
     $courseid = $course_module_from_id->{'course'};
     $student_id_number = $emailofStudent->idnumber;
     $courseFullName = getCourseName($courseid)->fullname;
@@ -162,15 +148,17 @@ function email_Student($studentObj, $typeOfUser)
         // EMAILS THE TEACHER
     } elseif ($typeOfUser === "teacher") {
         //Gets ID for 'editing tutor'
-        $role = $DB->get_record('role', array('shortname' => 'teacher','shortname' => 'editingteacher','shortname' => 'editingtutor'));
-        var_dump($role);
+        $role = $DB->get_record('role', array('shortname' => 'teacher'),"id");
         $context = context_course::instance($courseid);
+
 
         //Gets Group ID of the student
         $group_id = groups_get_group_by_name($courseid, $student_group);
         //Gets Teachers of the Group.
         $teachers = get_role_users($role->id, $context, "", "", "", "", $group_id);
-//    print_r($teachers);
+
+
+
         $subject = "Student Extension for course ".$courseShortName." for student ".$studentFirstName." has been granted";
 
         //Emails each Teacher
