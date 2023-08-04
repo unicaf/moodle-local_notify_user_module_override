@@ -117,11 +117,12 @@ function email_Student($studentObj, $typeOfUser)
     } else {
         $student_group = $student_group->name;
     }
-
+    $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
+    $quality_assurance_email = html_writer::link("mailto:qualityassurance@unicaf.org", "qualityassurance@unicaf.org");
     //EMAILS TO STUDENT
     if ($typeOfUser === 'student') {
         //Email of Unicaf extenuating Circumstances
-        $extenuatingCircumstances = html_writer::link("mailto:support@unicaf.org", "support@unicaf.org");
+
 
 
         $coursemodulesid = $studentObj->coursemodulesid;
@@ -164,9 +165,25 @@ function email_Student($studentObj, $typeOfUser)
         //Emails each Teacher
         foreach ($teachers as $teacher) {
             echo nl2br("Email is being sent to teacher with ID ".$teacher->id."\n");
-            $message = "Dear ".$teacher->firstname." ".$teacher->lastname.", \n\n"."Please be informed that assessment deadlines which relate to ".$courseFullName." ".$courseShortName." ".$student_group." have been changed as follows and require your attention \n 
-         Below you can find the details for your associated actions \n\n"."Student's name: ".$studentFirstName." ".$studentLastName." \n"."UniSIS ID number: ".$student_id_number."\n "." Assessment name :".$assignmentName."\n Previous assessment deadline: ".$assignmentDate." \n  New assessment deadline: ".$assignmentOverrideDate.
-                "\n\n In case the student submits or already submitted their work within the new assessment deadline, please bear in mind that this work should proceed through the marking process.";
+
+$message = <<<ANYTHING
+Dear $teacher->firstname,
+
+Please be informed that assessment deadlines which relate to $courseShortName have been changed as follows and require your attention.
+Below you can find the details for your associated actions:
+
+<ul>
+    <li>Student's name: $studentFirstName  $studentLastName</li>
+    <li>Student number: $student_id_number</li>
+    <li>Assessment name : $assignmentName</li>
+    <li>Previous assessment deadline: $assignmentDate</li>
+    <li>New assessment deadline: $assignmentOverrideDate</li>
+ </ul>
+In case the student submits or already submitted their work within the new assessment deadline,
+please bear in mind that this work should proceed through the marking process.
+
+Should you require any further clarification, please do no hesitate to contact the Unicaf Extenuating Circumstances team directly on $extenuatingCircumstances and/or the Quality Assurance Department at $quality_assurance_email .
+ANYTHING;
 
 
             //SEND EMAIL
