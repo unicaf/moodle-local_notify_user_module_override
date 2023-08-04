@@ -117,11 +117,13 @@ function email_Student($studentObj, $typeOfUser)
     } else {
         $student_group = $student_group->name;
     }
+    //Email of Unicaf extenuating Circumstances
     $extenuatingCircumstances = html_writer::link("mailto:extenuating.circumstances@unicaf.org", "extenuating.circumstances@unicaf.org");
+    //Email of Unicaf Quality Assurance
     $quality_assurance_email = html_writer::link("mailto:qualityassurance@unicaf.org", "qualityassurance@unicaf.org");
     //EMAILS TO STUDENT
     if ($typeOfUser === 'student') {
-        //Email of Unicaf extenuating Circumstances
+
 
 
 
@@ -138,10 +140,20 @@ function email_Student($studentObj, $typeOfUser)
         $subject = "Your course ".$courseFullName." has some changes in ".$component." has changed dates";
         //Message of email
 
-        $message = "Dear ".$studentFirstName."\n\n We would like to inform you the assessment deadline for  ".$assignment_url." has been changed from ".$assignmentDate." to  <strong> ".$assignmentOverrideDate." </strong>. \n\n "
-            ."In case you have already submitted ".$component."  prior or on ".$assignmentOverrideDate.", then rest assured that your assignment will be sent for marking .\n\n
-        In case you are yet to submit ".$component." ".", please do so prior to the new extended deadline ".$assignmentOverrideDate.
-            "\n\n Should you require any further clarification, please do not hesitate to contact the Student Support  team directly on ".$extenuatingCircumstances;
+$message = <<<ANYTHING
+Dear $studentFirstName,
+
+Following the review of your extenuating circumstances request, we would like to inform you that your application for an extension for $courseShortName $courseFullName  $student_group has been approved.
+
+The new assessment deadline for $assignment_url is $assignmentOverrideDate .
+
+Please note that late submission regulations do not apply to extended deadlines. Work submitted later than the above-approved dates/times will not be accepted and will be recorded as 0% . 
+
+In case you fail to meet the passing grade or fail to submit within the extended deadline, you will be required to wait for your results to be reviewed and confirmed by the Awarding body. You will then receive further information on how to proceed with the outstanding module.
+
+Should you require any further clarification, please do not hesitate to contact the Unicaf Extenuating Circumstances team directly on $extenuatingCircumstances 
+ANYTHING;
+
         // Function to send email
         email_to_user($emailofStudent, $emailFrom, $subject, $message, nl2br($message), "", "", "");
         email_sent("local_course_reminder_email", $studentObj->id);
